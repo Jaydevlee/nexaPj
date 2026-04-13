@@ -7,7 +7,7 @@
                 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
                 http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
-    <context:component-scan base-package="egovframework">
+    <context:component-scan base-package="kr">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
@@ -46,7 +46,7 @@
 
     <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="1"
 	    p:viewClass="org.springframework.web.servlet.view.JstlView"
-	    p:prefix="/WEB-INF/jsp/egovframework/example/" p:suffix=".jsp"/>
+	    p:prefix="/WEB-INF/jsp/kr/" p:suffix=".jsp"/>
 
     <!-- For Pagination Tag -->
     <bean id="imageRenderer" class="egovframework.example.cmmn.web.EgovImgPaginationRenderer"/>
@@ -61,4 +61,38 @@
 	<!-- /For Pagination Tag -->
 
     <mvc:view-controller path="/cmmn/validator.do" view-name="cmmn/validator"/>
+    
+    <!-- /////////////////////////////////// 넥사크로플랫폼 UIADAPTER17 설정 시작 /////////////////////////////////// -->
+	<bean id="nexacroFileView"    class="com.nexacro.uiadapter17.spring.core.view.NexacroFileView" />
+	<bean id="nexacroView"        class="com.nexacro.uiadapter17.spring.core.view.NexacroView">
+	    <property name="defaultContentType" value="PlatformXml" />
+	    <property name="defaultCharset" value="UTF-8" />
+	</bean>
+	
+	<!-- 넥사크로플랫폼 RequestMappingHandlerAdapter 구현체 등록 -->
+	<bean class="com.nexacro.uiadapter17.spring.core.resolve.NexacroRequestMappingHandlerAdapter" p:order="2">
+	    <property name="customArgumentResolvers">
+	        <list><bean class="com.nexacro.uiadapter17.spring.core.resolve.NexacroMethodArgumentResolver" /></list>
+	    </property>
+	    <property name="customReturnValueHandlers">
+	        <list>
+	            <bean class="com.nexacro.uiadapter17.spring.core.resolve.NexacroHandlerMethodReturnValueHandler">
+	                <property name="view"     ref="nexacroView" />
+	                <property name="fileView" ref="nexacroFileView" />
+	            </bean>
+	        </list>
+	    </property>
+	</bean>
+	
+	<!-- 넥사크로플랫폼 EXCEPTION-RESOLVER 등록 -->
+	<bean id="exceptionResolver" class="com.nexacro.uiadapter17.spring.core.resolve.NexacroMappingExceptionResolver" p:order="3">
+	    <property name="view" ref="nexacroView" />   
+	    <property name="shouldLogStackTrace" value="true" />   
+	    <property name="shouldSendStackTrace" value="true" />
+	    <!-- shouldSendStackTrace 가 false 일 경우 nexacro platform으로 전송되는 에러메시지  -->
+	    <!-- <property name="defaultErrorMsg" value="An Error Occured. check the ErrorCode for detail of error infomation" /> -->
+	    <property name="defaultErrorMsg" value="fail.common.msg" />
+	    <property name="messageSource" ref="messageSource" />   
+	</bean>    
+<!-- /////////////////////////////////// 넥사크로플랫폼 UIADAPTER17 설정 끝 /////////////////////////////////// -->
 </beans>

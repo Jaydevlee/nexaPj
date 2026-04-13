@@ -26,6 +26,11 @@
             obj.set_useclientlayout("false");
             obj._setContents("<ColumnInfo><Column id=\"BOARD_NO\" type=\"STRING\" size=\"256\"/><Column id=\"TITLE\" type=\"STRING\" size=\"256\"/><Column id=\"CONT\" type=\"STRING\" size=\"256\"/><Column id=\"WRITER\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
             this.addChild(obj.name, obj);
+
+
+            obj = new Dataset("dsSearch", this);
+            obj._setContents("<ColumnInfo><Column id=\"searchCmb\" type=\"STRING\" size=\"256\"/><Column id=\"searchVal\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            this.addChild(obj.name, obj);
             
             // UI Components Initialize
             obj = new Combo("cmbSearch","44","47","136","43",null,null,null,null,null,null,this);
@@ -66,7 +71,13 @@
             this.addLayout(obj.name, obj);
             
             // BindItem Information
+            obj = new BindItem("item0","edtSearch","value","dsSearch","searchVal");
+            this.addChild(obj.name, obj);
+            obj.bind();
 
+            obj = new BindItem("item1","cmbSearch","value","dsSearch","searchCmb");
+            this.addChild(obj.name, obj);
+            obj.bind();
             
             // TriggerItem Information
 
@@ -89,9 +100,19 @@
         	var objApp = nexacro.getApplication() ;
         	var searchCmb = this.cmbSearch.value;
         	var searchVal = this.edtSearch.value;
+        	if(searchCmb == undefined) {
+        		searchCmb == "";
+        	}
+        	if(searchVal == undefined) {
+        		searchVal == "";
+        	}
+
+        	//this.dsSearch.setColumn(0, "searchCmb", searchCmb); // datset에 값 부여(행, 칼럼id, 값)
+        	//this.dsSearch.setColumn(0, "searchVal", searchVal); // datset에 값 부여(행, 칼럼id, 값)
+
         	this.transaction( "selectList"            	// 서비스ID (임의 지정 가능)
         						,"DataSrv::selectList.do" 	// 호출 URL http://localhost/nexaPj/selectList.do (TypeDefinition에서 설정)
-        						,""							// 데이터를 넘길 dataset ([nexa]에서 보내는 dataset id = java에서 보내는 datasetId 여러개는 ' '공백으로 구분하여 처리)
+        						,"dsSearch=dsSearch"		// 데이터를 넘길 dataset ([nexa]에서 보내는 dataset id = java에서 받는 datasetId 여러개는 ' '공백으로 구분하여 처리)
         						,"dsList=dsList"			// 데이터를 받을 dataset (nexa에서 받는 datasetId = java에서 보내는 datasetId 여러개는 ' '공백으로 구분하여 처리))
         						,"searchCmb="+searchCmb
         						+" searchVal="+searchVal	// 파라미터로 넘길 값	(key=value 여러개는 ' '공백으로 구분하여 처리)) , <- 여러개 필요한 경우
@@ -103,6 +124,10 @@
         // 등록화면으로 이동 이벤트
         this.btnInsert_onclick = function(obj,e)
         {
+        	//this.go("FrameBase/Form_sub.xfdl"); // 특정 화면으로 이동
+        	var objParam  = {"boardNo":""
+        					}
+        	this.showPopup(objParam);
 
         };
 
@@ -118,14 +143,56 @@
         	alert("callback" + strSvcID);
         	console.log(this.dsList.saveXML());
         }
+
+        // 폼(화면)이 로드될 시 동작하는 이벤트
+        this.Form_Work_onload = function(obj,e)
+        {
+        	this.dsSearch.clearData(); // dataSet의 데이터만 지우는 메소드(칼럼 유지)
+        	this.dsSearch.addRow();	// dataSet에 행을 추가하는 메소드, 행 위치를 return해줌
+        };
+
+
+        this.cmbSearch_onkillfocus = function(obj,e)
+        {
+        	console.log(this.dsSearch.saveXML());
+        };
+
+        this.edtSearch_onkillfocus = function(obj,e)
+        {
+        	console.log(this.dsSearch.saveXML());
+        };
+
+        this.showPopup = function(objParam){
+        	popup = new nexacro.ChildFrame;
+        	popup.init("popupwork", 0, 0, 800, 700, null, null, "FrameBase::Form_sub.xfdl");
+        	popup.set_dragmovetype('all');
+        	popup.set_layered("true");
+        	popup.set_autosize(true);
+        	popup.set_showtitlebar("Popup Title");
+        	popup.set_showstatusbar(false)
+        	popup.set_resizable(true);
+        	popup.set_openalign("center middle");
+        	popup.showModal(this.getOwnerFrame(), objParam, this, "fnPopupCallback", true);
+        	}
+        this.grdList_oncelldblclick = function(obj,e)
+        {
+        	var objParam = {"boardNo" : this.dsList.getColumn(this.dsList.rowposition, "BOARD_NO")};
+        	this.showPopup(objParam);
+        };
+
         });
         
         // Regist UI Components Event
         this.on_initEvent = function()
         {
+            this.addEventHandler("onload",this.Form_Work_onload,this);
+            this.cmbSearch.addEventHandler("onkillfocus",this.cmbSearch_onkillfocus,this);
+            this.edtSearch.addEventHandler("onchanged",this.edtSearch_onchanged,this);
+            this.edtSearch.addEventHandler("onkillfocus",this.edtSearch_onkillfocus,this);
             this.btnSearch.addEventHandler("onclick",this.btnSearch_onclick,this);
             this.btnInsert.addEventHandler("onclick",this.btnInsert_onclick,this);
             this.btnDelete.addEventHandler("onclick",this.btnDelete_onclick,this);
+            this.grdList.addEventHandler("oncelldblclick",this.grdList_oncelldblclick,this);
         };
         this.loadIncludeScript("Form_Work.xfdl");
         this.loadPreloadList();
