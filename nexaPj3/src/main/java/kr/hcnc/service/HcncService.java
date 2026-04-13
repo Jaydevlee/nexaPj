@@ -7,15 +7,15 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
+
 import org.springframework.stereotype.Service;
 
-import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import kr.hcnc.mapper.HcncMapper;
 
 @Service("hcncService")
-public class HcncService extends EgovAbstractServiceImpl{
+public class HcncService {
 	@Resource(name = "hcncMapper")
-	private HcncMapper hcncMapper;
+	public HcncMapper hcncMapper;
 	
 	public String selectTest() {
 		String result = hcncMapper.selectTest();
@@ -33,7 +33,7 @@ public class HcncService extends EgovAbstractServiceImpl{
 	
 	@Transactional
 	public List<Map<String, Object>> selectBoardList(HashMap<String, Object> param){
-		List<Map<String, Object>> list = hcncMapper.selectBoard(param);
+		List<Map<String, Object>> list = hcncMapper.selectBoardList(param);
 		return list;
 	}
 	
@@ -44,7 +44,7 @@ public class HcncService extends EgovAbstractServiceImpl{
 	}
 	
 	@Transactional
-	public int insertBoard(Map<String, Object> param){
+	public int insertBoard(HashMap<String, Object> param){
 		System.out.println("게시글 등록 시작");
 		int result = hcncMapper.insertBoard(param);
 		System.out.println("게시글 등록 완료");
@@ -67,5 +67,4 @@ public class HcncService extends EgovAbstractServiceImpl{
 		return result;
 		}
 
-	}
-
+}

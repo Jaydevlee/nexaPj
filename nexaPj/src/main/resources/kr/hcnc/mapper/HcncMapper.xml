@@ -14,7 +14,7 @@
 		${P1} > A  
 		-->
 	</insert>
-	<select id = "selectBoard" parameterType="Map">
+	<select id = "selectBoard" parameterType="Map" resultType="Map">
 		SELECT BOARD_NO,
 				TITLE,
 				CONT,
@@ -28,8 +28,25 @@
 		<if test='boardNo != null and boardNo != ""'>
 		AND	BOARD_NO=#{boardNo}
 		</if>
-		ORDER BY BOARD_NO DESC
+		<if test='searchVal != null and searchVal != ""'>
+		
+		<choose>
+			<when test='searchCmb == "ALL"' >
+			AND (
+				TITLE LIKE CONCAT('%', #{searchVal}, '%')
+			OR CONT LIKE CONCAT('%', #{searchVal}, '%')
+				)
+			</when>
+			<when test='searchCmb == "TITLE"' >
+			AND TITLE LIKE CONCAT('%', #{searchVal}, '%')
+			</when>
+			<when test='searchCmb == "CONT"' >
+			AND CONT LIKE CONCAT('%', #{searchVal}, '%')
+			</when>
+		</choose>
+		</if>
 	</select>
+	
 	<select id = "selectBoardList" parameterType="Map" resultType="Map">
 		SELECT BOARD_NO,
 				TITLE,
@@ -57,17 +74,17 @@
 	</select>
 	<!-- useGeneratedKyes=마지막으로 생성된 PK의 값을 가져옴, keyProperty: 키를 담을 변수 명 -->
 	<insert id="insertBoard" parameterType="Map" useGeneratedKeys="true" keyProperty="boardNo">
-		INSERT INTO HCNC.HCNC_BOARD(TITLE, CONT, WRITER, REG_DT, MOD_DT)
-		VALUES (#{title}, #{cont}, #{writer}, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP())
+		INSERT INTO HCNC.HCNC_BOARD(TITLE, CONT, WRITER, MODIFIER)
+		VALUES (#{TITLE}, #{CONT}, #{WRITER}, #{MODIFIER})
 	</insert>
 	
 	<update id="updateBoard" parameterType="Map">
 		UPDATE HCNC.HCNC_BOARD
-		SET TITLE=#{title},
-			CONT=#{cont},
-			MODIFIER=#{modifier},
+		SET TITLE=#{TITLE},
+			CONT=#{CONT},
+			MODIFIER=#{MODIFIER},
 			MOD_DT=CURRENT_TIMESTAMP()
-		WHERE BOARD_NO=#{boardNo}
+		WHERE BOARD_NO=#{BOARD_NO}
 	</update>
 	
 	<delete id="deleteBoard" parameterType="int">
