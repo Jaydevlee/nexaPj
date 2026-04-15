@@ -44,6 +44,12 @@ public class HcncService extends EgovAbstractServiceImpl{
 	}
 	
 	@Transactional
+	public List<Map<String, Object>> selectCode() {
+		List<Map<String, Object>> result = hcncMapper.selectCode();
+		return result;
+	}
+	
+	@Transactional
 	public int insertBoard(Map<String, Object> param){
 		System.out.println("게시글 등록 시작");
 		int result = hcncMapper.insertBoard(param);
@@ -52,7 +58,7 @@ public class HcncService extends EgovAbstractServiceImpl{
 	}
 	
 	@Transactional
-	public int updateBoard(HashMap<String, Object> param) {
+	public int updateBoard(Map<String, Object> param) {
 		System.out.println("수정 시작");
 		int result = hcncMapper.updateBoard(param);
 		System.out.println("수정 끝");
@@ -63,9 +69,16 @@ public class HcncService extends EgovAbstractServiceImpl{
 	public int deleteBoard(int boardNo) {
 		System.out.println("삭제 시작");
 		int result = hcncMapper.deleteBoard(boardNo);
-		System.out.println("수정 끝");
+		System.out.println("삭제 끝");
 		return result;
 		}
-
-	}
+	
+	@Transactional
+	public int deleteBoardList(List<String> boardNoList) {
+		System.out.println("삭제 시작");
+		int result = hcncMapper.deleteBoardList(boardNoList);
+		System.out.println("삭제 끝");
+		return result;
+		}
+}
 

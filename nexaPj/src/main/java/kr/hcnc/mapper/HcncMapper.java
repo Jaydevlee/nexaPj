@@ -13,9 +13,10 @@ public interface HcncMapper {
 	List<Map<String, Object>> selectBoard(HashMap<String, Object> param);
 	List<Map<String, Object>> selectBoardList(HashMap<String, Object> param);
 	List<Map<String, Object>> selectBoardDetail(HashMap<String, Object> param);
-	
+	List<Map<String, Object>> selectCode();
 	
 	int insertBoard(Map<String, Object> param);
-	int updateBoard(HashMap<String, Object> param);
+	int updateBoard(Map<String, Object> param);
 	int deleteBoard(int boardNo);
+	int deleteBoardList(List<String> boardNoList);
 }
