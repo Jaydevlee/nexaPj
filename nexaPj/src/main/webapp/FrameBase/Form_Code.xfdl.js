@@ -328,12 +328,12 @@
         // 콜백함수
         this.fnCallback = function(strSvcID, nErrorCode, strErrorMag) {
         	if(strSvcID == "selectCodeList" || strSvcID == "selectCodeListDtl"){
-        		alert("callback" + strSvcID);
+        		alert("callback :" + strSvcID);
         		console.log(this.dsList.saveXML());
         	} else if(strSvcID == "insertCode") {
-        		alert("callback"+ strSvcID);
+        		alert("callback : "+ strSvcID);
         	} else if(strSvcID == "updateCode") {
-        		alert("callback"+ strSvcID);
+        		alert("callback : "+ strSvcID);
         	}
         };
 

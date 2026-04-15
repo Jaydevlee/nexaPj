@@ -88,7 +88,7 @@ public class HcncController {
 		param.put("searchCmb", searchCmb);
 		param.put("searchVal", searchVal);
 		System.out.println(hcncService.selectCodeListDtl(param));
-	    result.addDataSet("dsCodeList", hcncService.selectCodeListDtl(param));
+	    result.addDataSet("dsCodeListDtl", hcncService.selectCodeListDtl(param));
 		return result;
 		
 	}
