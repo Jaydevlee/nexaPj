@@ -18,12 +18,12 @@
             
             // Object(Dataset, ExcelExportObject) Initialize
             obj = new Dataset("dsSearchCmb", this);
-            obj._setContents("<ColumnInfo><Column id=\"code\" type=\"STRING\" size=\"256\"/><Column id=\"codeNm\" type=\"STRING\" size=\"256\"/></ColumnInfo><Rows><Row><Col id=\"codeNm\">전체</Col><Col id=\"code\">ALL</Col></Row><Row><Col id=\"codeNm\">타이틀</Col><Col id=\"code\">TITLE</Col></Row><Row><Col id=\"codeNm\">내용</Col><Col id=\"code\">CONT</Col></Row></Rows>");
+            obj._setContents("<ColumnInfo><Column id=\"code\" type=\"STRING\" size=\"256\"/><Column id=\"codeNm\" type=\"STRING\" size=\"256\"/></ColumnInfo><Rows><Row><Col id=\"codeNm\">전체</Col><Col id=\"code\">ALL</Col></Row><Row><Col id=\"codeNm\">코드</Col><Col id=\"code\">CODE</Col></Row><Row><Col id=\"codeNm\">코드명</Col><Col id=\"code\">CODE_NM</Col></Row></Rows>");
             this.addChild(obj.name, obj);
 
 
             obj = new Dataset("dsSearchCmbDtl", this);
-            obj._setContents("<ColumnInfo><Column id=\"code\" type=\"STRING\" size=\"256\"/><Column id=\"codeNm\" type=\"STRING\" size=\"256\"/></ColumnInfo><Rows><Row><Col id=\"codeNm\">전체</Col><Col id=\"code\">ALL</Col></Row><Row><Col id=\"codeNm\">타이틀</Col><Col id=\"code\">TITLE</Col></Row><Row><Col id=\"codeNm\">내용</Col><Col id=\"code\">CONT</Col></Row></Rows>");
+            obj._setContents("<ColumnInfo><Column id=\"code\" type=\"STRING\" size=\"256\"/><Column id=\"codeNm\" type=\"STRING\" size=\"256\"/></ColumnInfo><Rows><Row><Col id=\"codeNm\">전체</Col><Col id=\"code\">ALL</Col></Row><Row><Col id=\"codeNm\">코드</Col><Col id=\"code\">CODE</Col></Row><Row><Col id=\"codeNm\">코드명</Col><Col id=\"code\">CODE_NM</Col></Row></Rows>");
             this.addChild(obj.name, obj);
 
 
@@ -94,16 +94,17 @@
             obj.set_taborder("8");
             this.addChild(obj.name, obj);
 
-            obj = new Edit("edtCodeNm","240","515","95","30",null,null,null,null,null,null,this);
+            obj = new Edit("edtCodeNm","243","515","107","30",null,null,null,null,null,null,this);
             obj.set_taborder("9");
             this.addChild(obj.name, obj);
 
-            obj = new Static("Static01","35","501","137","60",null,null,null,null,null,null,this);
+            obj = new Static("Static01","35","501","29","60",null,null,null,null,null,null,this);
             obj.set_taborder("10");
             obj.set_text("코드");
+            obj.getSetter("onchanged").set("Static01_onchanged");
             this.addChild(obj.name, obj);
 
-            obj = new Static("Static02","200","501","120","60",null,null,null,null,null,null,this);
+            obj = new Static("Static02","200","501","40","60",null,null,null,null,null,null,this);
             obj.set_taborder("11");
             obj.set_text("코드명");
             this.addChild(obj.name, obj);
@@ -155,16 +156,16 @@
             obj.set_taborder("20");
             this.addChild(obj.name, obj);
 
-            obj = new Edit("edtCodeNmDtl","834","515","95","30",null,null,null,null,null,null,this);
+            obj = new Edit("edtCodeNmDtl","840","515","110","30",null,null,null,null,null,null,this);
             obj.set_taborder("21");
             this.addChild(obj.name, obj);
 
-            obj = new Static("Static01_00","629","501","137","60",null,null,null,null,null,null,this);
+            obj = new Static("Static01_00","629","501","31","60",null,null,null,null,null,null,this);
             obj.set_taborder("22");
             obj.set_text("코드");
             this.addChild(obj.name, obj);
 
-            obj = new Static("Static02_00","794","501","120","60",null,null,null,null,null,null,this);
+            obj = new Static("Static02_00","794","501","36","60",null,null,null,null,null,null,this);
             obj.set_taborder("23");
             obj.set_text("코드명");
             this.addChild(obj.name, obj);
@@ -190,6 +191,22 @@
             obj = new BindItem("item3","edtSearchDtl","value","dsSearchDtl","searchValDtl");
             this.addChild(obj.name, obj);
             obj.bind();
+
+            obj = new BindItem("item4","edtCode","value","dsCodeList","코드");
+            this.addChild(obj.name, obj);
+            obj.bind();
+
+            obj = new BindItem("item5","edtCodeNm","value","dsCodeList","코드명");
+            this.addChild(obj.name, obj);
+            obj.bind();
+
+            obj = new BindItem("item6","edtCodeDtl","value","dsCodeListDtl","코드");
+            this.addChild(obj.name, obj);
+            obj.bind();
+
+            obj = new BindItem("item7","edtCodeNmDtl","value","dsCodeListDtl","코드명");
+            this.addChild(obj.name, obj);
+            obj.bind();
             
             // TriggerItem Information
 
@@ -210,9 +227,11 @@
         	this.dsSearchDtl.addRow();
 
             // (선택 사항) 행이 추가된 후, 콤보박스 초기값을 "ALL" 등으로 세팅하고 싶다면
-            // this.dsSearch.setColumn(0, "searchCmb", "ALL");
+            this.dsSearch.setColumn(0, "searchCmb", "ALL");
+        	this.dsSearchDtl.setColumn(0, "searchCmbDtl", "ALL");
         };
 
+        // 조회
         this.btnSelect_onclick = function(obj,e)
         {
         	var objApp = nexacro.getApplication();
@@ -238,6 +257,116 @@
 
         };
 
+        this.btnSelectDtl_onclick = function(obj,e)
+        {
+        	var objApp = nexacro.getApplication();
+        	var searchCmb = this.cmbSearch.value;
+        	var searchVal = this.edtSearch.value;
+
+        	if(searchCmb == undefined) {
+        		searchCmb = "";
+        	}
+        	if(searchVal == undefined) {
+        		searchVal = "";
+        	}
+
+        	this.transaction( "selectCodeListDtl"            	// 서비스ID (임의 지정 가능)
+        						,"DataSrv::selectCodeListDtl.do" 	// 호출 URL http://localhost/nexaPj/selectList.do (TypeDefinition에서 설정)
+        						,"dsSearch=dsSearch"		// 데이터를 넘길 dataset ([nexa]에서 보내는 dataset id = java에서 받는 datasetId 여러개는 ' '공백으로 구분하여 처리)
+        						,"dsCodeListDtl=dsCodeListDtl"			// 데이터를 받을 dataset (nexa에서 받는 datasetId = java에서 보내는 datasetId 여러개는 ' '공백으로 구분하여 처리))
+        						,"searchCmb="+searchCmb
+        						+" searchVal="+searchVal	// 파라미터로 넘길 값	(key=value 여러개는 ' '공백으로 구분하여 처리)) , <- 여러개 필요한 경우
+        						,"fnCallback"
+        						,true
+        						);
+
+        };
+
+        // insert
+        // insert할 행 추가
+        this.btnAdd_onclick = function(obj,e)
+        {
+        	this.dsCodeList.addRow();
+        };
+
+        this.btnSave_onclick = function(obj,e)
+        {
+        	if(this.edtCode.value == undefined || this.edtCode.value.trim() == "") {
+        		alert("코드를 입력해주세요");
+        		return;
+        	}
+
+        	if(this.edtCodeNm.value  == undefined || this.edtCodeNm.trim() == "") {
+        		alert("코드명을 입력해주세요");
+        		return;
+        	}
+
+        	var serviceId = "";
+        	var callUrl = "";
+        	var callBackFn = "fnCallback"
+
+        	if(this.edtCodeDtl.enable){
+        		serviceId = "insertCode"
+        		callUrl = "DataSrv::insertCode.do";
+        	} else {
+        		serviceId = "updateCode"
+        		callUrl = "DataSrv::updateCode.do";
+        	}
+        	if(confirm("저장하시겠습니까?")){
+        		this.transaction(serviceId
+        						,callUrl
+        						,"dsCodeList=dsCodeList:U"
+        						,""
+        						,""
+        						,callBackFn
+        						,true
+        						);
+        	}
+        };
+
+
+        // 콜백함수
+        this.fnCallback = function(strSvcID, nErrorCode, strErrorMag) {
+        	if(strSvcID == "selectCodeList" || strSvcID == "selectCodeListDtl"){
+        		alert("callback" + strSvcID);
+        		console.log(this.dsList.saveXML());
+        	} else if(strSvcID == "insertCode") {
+        		alert("callback"+ strSvcID);
+        	} else if(strSvcID == "updateCode") {
+        		alert("callback"+ strSvcID);
+        	}
+        };
+
+
+        // grid에서 코드 클릭 이벤트
+        this.dsCodeList_onrowposchanged = function(obj,e)
+        {
+        	if(e.newrow < 0) return;
+
+        	var nRowType = obj.getRowType(e.newrow);
+
+        	if(nRowType == obj.ROWTYPE_INSERT){
+        		this.edtCode.enable = true;
+        	} else {
+        		this.edtCode.enable = false;
+        	}
+        	this.edtCodeNm.enable = true;
+        };
+
+        this.dsCodeListDtl_onrowposchanged = function(obj,e)
+        {
+        	if(e.newrow < 0) return;
+
+        	var nRowType = obj.getRowType(e.newrow);
+
+        	if(nRowType == obj.ROWTYPE_INSERT){
+        		this.edtCodeDtl.enable = true;
+        	} else {
+        		this.edtCodeDtl.enable = false;
+        	}
+        	this.edtCodeNmDtl.enable = true;
+        };
+
 
 
         });
@@ -247,6 +376,11 @@
         {
             this.addEventHandler("onload",this.Form_Code_onload,this);
             this.btnSelect.addEventHandler("onclick",this.btnSelect_onclick,this);
+            this.btnSave.addEventHandler("onclick",this.btnSave_onclick,this);
+            this.btnAdd.addEventHandler("onclick",this.btnAdd_onclick,this);
+            this.btnSelectDtl.addEventHandler("onclick",this.btnSelectDtl_onclick,this);
+            this.dsCodeList.addEventHandler("onrowposchanged",this.dsCodeList_onrowposchanged,this);
+            this.dsCodeListDtl.addEventHandler("onrowposchanged",this.dsCodeListDtl_onrowposchanged,this);
         };
         this.loadIncludeScript("Form_Code.xfdl");
         this.loadPreloadList();

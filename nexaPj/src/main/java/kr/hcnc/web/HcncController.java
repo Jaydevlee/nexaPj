@@ -59,6 +59,40 @@ public class HcncController {
 	return result;
 	}
 
+	@RequestMapping(value="/selectCodeList.do")
+	public NexacroResult selectCodeList(@ParamVariable(name="searchCmb", required=false) String searchCmb,
+										@ParamVariable(name="searchVal", required=false) String searchVal,
+										@ParamDataSet(name="dsSearch", required=false) Map<String, Object> dsSearch) {
+		System.out.println("searchCmb=" + searchCmb);
+		System.out.println("searchVal=" + searchVal);
+		System.out.println("dsSearch=" + dsSearch);
+		NexacroResult result = new NexacroResult();
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		param.put("searchCmb", searchCmb);
+		param.put("searchVal", searchVal);
+		System.out.println(hcncService.selectCodeList(param));
+	    result.addDataSet("dsCodeList", hcncService.selectCodeList(param));
+		return result;
+		
+	}
+	
+	@RequestMapping(value="/selectCodeListDtl.do")
+	public NexacroResult selectCodeListDtl(@ParamVariable(name="searchCmb", required=false) String searchCmb,
+										@ParamVariable(name="searchVal", required=false) String searchVal,
+										@ParamDataSet(name="dsSearchDtl", required=false) Map<String, Object> dsSearchDtl) {
+		System.out.println("searchCmb=" + searchCmb);
+		System.out.println("searchVal=" + searchVal);
+		System.out.println("dsSearch=" + dsSearchDtl);
+		NexacroResult result = new NexacroResult();
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		param.put("searchCmb", searchCmb);
+		param.put("searchVal", searchVal);
+		System.out.println(hcncService.selectCodeListDtl(param));
+	    result.addDataSet("dsCodeList", hcncService.selectCodeListDtl(param));
+		return result;
+		
+	}
+	
 	// insertBoard
 	@RequestMapping(value="/insertBoard.do")
 	public NexacroResult insertBoard(@ParamDataSet(name="dsBoardDetail") Map<String, Object> dsBoardDetail) {
@@ -128,6 +162,22 @@ public class HcncController {
 		return result;
 	};
 	
+	
+	//insertCode
+	@RequestMapping(value="/insertCode.do")
+	public NexacroResult insertCode(@ParamDataSet(name="dsBoardDetail") Map<String, Object> dsCodeList) {
+		NexacroResult result = new NexacroResult();
+		int insertResult = hcncService.insertCode(dsCodeList);
+		if(insertResult > 0 ) {
+			result.addVariable("ErrorCode", 0);
+			result.addVariable("ErrorMsg", "코드 등록이 완료되었습니다.");
+		} else {
+			result.addVariable("ErrorCode", -1);
+			result.addVariable("ErrorMsg", "코드가 등록되지 않았습니다.");
+		}
+		return result;
+	}
+	
 	//selectCode
 	@RequestMapping(value="/selectCode.do")
 	public NexacroResult selectCode() {
@@ -192,6 +242,19 @@ public class HcncController {
 		return result;
 	};
 	
+	
+	public NexacroResult updateCode(@ParamDataSet(name="dsBoardDetail") Map<String, Object> dsCodeList) {
+		NexacroResult result = new NexacroResult();
+		int updateResult = hcncService.updateCode(dsCodeList);
+		if(updateResult > 0 ) {
+			result.addVariable("ErrorCode", 0);
+			result.addVariable("ErrorMsg", "코드명이 수정되었습니다.");
+		} else {
+			result.addVariable("ErrorCode", -1);
+			result.addVariable("ErrorMsg", "코드명이 수정되지 않았습니다.");
+		}
+		return result;
+	}
 	
 	// 과장님 update 로직
 //	@RequestMapping(value="/updateBoard.do")
@@ -300,20 +363,5 @@ public class HcncController {
 //		return result;
 //	}
 	
-	@RequestMapping(value="/selectCodeList.do")
-	public NexacroResult selectCodeList(@ParamVariable(name="searchCmb", required=false) String searchCmb,
-									@ParamVariable(name="searchVal", required=false) String searchVal,
-									@ParamDataSet(name="dsSearch", required=false) Map<String, Object> dsSearch) {
-		System.out.println("searchCmb=" + searchCmb);
-		System.out.println("searchVal=" + searchVal);
-		System.out.println("dsSearch=" + dsSearch);
-		NexacroResult result = new NexacroResult();
-		HashMap<String, Object> param = new HashMap<String, Object>();
-		param.put("searchCmb", searchCmb);
-		param.put("searchVal", searchVal);
-		System.out.println(hcncService.selectBoardList(param));
-	    result.addDataSet("dsCodeList", hcncService.selectCodeList(param));
-		return result;
-		
-	}
+	
 };

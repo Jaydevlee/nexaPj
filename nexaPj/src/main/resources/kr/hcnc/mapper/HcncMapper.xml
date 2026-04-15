@@ -117,10 +117,61 @@
 		WHERE 1=1
 			AND BOARD_NO=#{boardNo}
 	</select>
+	
+	<select id="selectCodeList" parameterType="Map" resultType="Map">
+		SELECT CODE AS 코드
+			, CODE_NM AS 코드명
+			FROM HCNC.COM_CD_MST
+		WHERE 1=1
+		<if test='searchVal != null and searchVal != ""'>
+		<choose>
+			<when test='searchCmb == "ALL"' >
+			AND (
+				 CODE LIKE CONCAT('%', #{searchVal}, '%')
+				OR CODE_NM LIKE CONCAT('%', #{searchVal}, '%')
+			)
+			</when>
+			<when test='searchCmb == "CODE"' >
+				AND CODE LIKE CONCAT('%', #{searchVal}, '%')
+			</when>
+			<when test='searchCmb == "CODE_NM"' >
+				AND CODE_NM LIKE CONCAT('%', #{searchVal}, '%')
+			</when>
+		</choose>
+		</if>
+	</select>
+ 	
+	<select id="selectCodeListDtl" parameterType="Map" resultType="Map">
+		SELECT CODE AS 코드
+			, CODE_NM AS 코드명
+			FROM HCNC.COM_CD_DTL
+		WHERE 1=1
+		<if test='searchVal != null and searchVal != ""'>
+		<choose>
+			<when test='searchCmb == "ALL"' >
+			AND (
+				 CODE LIKE CONCAT('%', #{searchVal}, '%')
+				OR CODE_NM LIKE CONCAT('%', #{searchVal}, '%')
+			)
+			</when>
+			<when test='searchCmb == "CODE"' >
+				AND CODE LIKE CONCAT('%', #{searchVal}, '%')
+			</when>
+			<when test='searchCmb == "CODE_NM"' >
+				AND CODE_NM LIKE CONCAT('%', #{searchVal}, '%')
+			</when>
+		</choose>
+		</if>
+	</select>
 	<!-- useGeneratedKyes=마지막으로 생성된 PK의 값을 가져옴, keyProperty: 키를 담을 변수 명 -->
 	<insert id="insertBoard" parameterType="Map" useGeneratedKeys="true" keyProperty="boardNo">
 		INSERT INTO HCNC.HCNC_BOARD(TITLE, CONT, WRITER, MODIFIER, BOARD_TYPE, CATEGORY)
 		VALUES (#{TITLE}, #{CONT}, #{WRITER}, #{MODIFIER}, #{BOARD_TYPE_NM}, #{CATEGORY_NM})
+	</insert>
+	
+	<insert id="insertCode" parameterType="Map">
+		INSERT INTO HCNC.COM_CD_MST(CODE, CODE_NM)
+		VALUES (#{CODE}, #{CODE_NM})
 	</insert>
 	
 	<update id="updateBoard" parameterType="Map">
@@ -132,6 +183,13 @@
 			BOARD_TYPE=#{BOARD_TYPE_NM},
 			CATEGORY=#{CATEGORY_NM}
 		WHERE BOARD_NO=#{BOARD_NO}
+	</update>
+	
+	<update id="updateCode" parameterType="Map">
+		UPDATE CNC.COM_CD_MST
+			SET CODE_NM = #{CODE_NM}
+		WEHRE CODE = #{CODE}
+			
 	</update>
 	
 	<delete id="deleteBoard" parameterType="int">
@@ -153,10 +211,5 @@
 		FROM HCNC.COM_CD_DTL 
 	</select>
 	
-	<select id="selectCodeList" parameterType="Map" resultType="Map">
-		SELECT CODE AS 코드
-			, CDOE_NM AS 코드명
-	</select>
- 	
 	
 </mapper>
