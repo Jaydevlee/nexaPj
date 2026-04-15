@@ -176,6 +176,7 @@
         						+" searchBoardType="+searchBoardType
         						+" searchCategory="+searchCategory
         						,"fnCallback"
+        						,true
         						);
 
         };

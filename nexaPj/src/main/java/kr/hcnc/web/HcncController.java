@@ -299,4 +299,21 @@ public class HcncController {
 //		}
 //		return result;
 //	}
+	
+	@RequestMapping(value="/selectCodeList.do")
+	public NexacroResult selectCodeList(@ParamVariable(name="searchCmb", required=false) String searchCmb,
+									@ParamVariable(name="searchVal", required=false) String searchVal,
+									@ParamDataSet(name="dsSearch", required=false) Map<String, Object> dsSearch) {
+		System.out.println("searchCmb=" + searchCmb);
+		System.out.println("searchVal=" + searchVal);
+		System.out.println("dsSearch=" + dsSearch);
+		NexacroResult result = new NexacroResult();
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		param.put("searchCmb", searchCmb);
+		param.put("searchVal", searchVal);
+		System.out.println(hcncService.selectBoardList(param));
+	    result.addDataSet("dsCodeList", hcncService.selectCodeList(param));
+		return result;
+		
+	}
 };

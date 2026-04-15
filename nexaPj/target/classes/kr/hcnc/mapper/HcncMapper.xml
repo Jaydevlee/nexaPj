@@ -152,4 +152,11 @@
 			, CODE_NM
 		FROM HCNC.COM_CD_DTL 
 	</select>
+	
+	<select id="selectCodeList" parameterType="Map" resultType="Map">
+		SELECT CODE AS 코드
+			, CDOE_NM AS 코드명
+	</select>
+ 	
+	
 </mapper>

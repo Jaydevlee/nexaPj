@@ -202,19 +202,50 @@
         
         // User Script
         this.registerScript("Form_Code.xfdl", function() {
+        this.Form_Code_onload = function(obj,e)
+        {
+        	this.dsSearch.clearData();
+            this.dsSearch.addRow();
+        	this.dsSearchDtl.clearData();
+        	this.dsSearchDtl.addRow();
 
-
+            // (선택 사항) 행이 추가된 후, 콤보박스 초기값을 "ALL" 등으로 세팅하고 싶다면
+            // this.dsSearch.setColumn(0, "searchCmb", "ALL");
+        };
 
         this.btnSelect_onclick = function(obj,e)
         {
+        	var objApp = nexacro.getApplication();
+        	var searchCmb = this.cmbSearch.value;
+        	var searchVal = this.edtSearch.value;
+
+        	if(searchCmb == undefined) {
+        		searchCmb = "";
+        	}
+        	if(searchVal == undefined) {
+        		searchVal = "";
+        	}
+
+        	this.transaction( "selectCodeList"            	// 서비스ID (임의 지정 가능)
+        						,"DataSrv::selectCodeList.do" 	// 호출 URL http://localhost/nexaPj/selectList.do (TypeDefinition에서 설정)
+        						,"dsSearch=dsSearch"		// 데이터를 넘길 dataset ([nexa]에서 보내는 dataset id = java에서 받는 datasetId 여러개는 ' '공백으로 구분하여 처리)
+        						,"dsCodeList=dsCodeList"			// 데이터를 받을 dataset (nexa에서 받는 datasetId = java에서 보내는 datasetId 여러개는 ' '공백으로 구분하여 처리))
+        						,"searchCmb="+searchCmb
+        						+" searchVal="+searchVal	// 파라미터로 넘길 값	(key=value 여러개는 ' '공백으로 구분하여 처리)) , <- 여러개 필요한 경우
+        						,"fnCallback"
+        						,true
+        						);
 
         };
+
+
 
         });
         
         // Regist UI Components Event
         this.on_initEvent = function()
         {
+            this.addEventHandler("onload",this.Form_Code_onload,this);
             this.btnSelect.addEventHandler("onclick",this.btnSelect_onclick,this);
         };
         this.loadIncludeScript("Form_Code.xfdl");
