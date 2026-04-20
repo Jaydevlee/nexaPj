@@ -31,6 +31,7 @@ public class HcncService extends EgovAbstractServiceImpl{
 		return result;
 	}
 	
+	// 조회 호출 
 	@Transactional
 	public List<Map<String, Object>> selectBoardList(HashMap<String, Object> param){
 		List<Map<String, Object>> list = hcncMapper.selectBoard(param);
@@ -44,6 +45,25 @@ public class HcncService extends EgovAbstractServiceImpl{
 	}
 	
 	@Transactional
+	public List<Map<String, Object>> selectCode() {
+		List<Map<String, Object>> result = hcncMapper.selectCode();
+		return result;
+	}
+	
+	@Transactional
+	public List<Map<String, Object>> selectCodeList(HashMap<String, Object> param) {
+		List<Map<String, Object>> result = hcncMapper.selectCodeList(param);
+		return result;
+	}
+	
+	@Transactional
+	public List<Map<String, Object>> selectCodeListDtl(HashMap<String, Object> param) {
+		List<Map<String, Object>> result = hcncMapper.selectCodeListDtl(param);
+		return result;
+	}
+	
+	// 게시판, 코드 작성
+	@Transactional
 	public int insertBoard(Map<String, Object> param){
 		System.out.println("게시글 등록 시작");
 		int result = hcncMapper.insertBoard(param);
@@ -52,7 +72,24 @@ public class HcncService extends EgovAbstractServiceImpl{
 	}
 	
 	@Transactional
-	public int updateBoard(HashMap<String, Object> param) {
+	public int insertCode(Map<String, Object> param){
+		System.out.println("코드 등록 시작");
+		int result = hcncMapper.insertCode(param);
+		System.out.println("코드 등록 완료");
+		return result;
+	}
+	
+	@Transactional
+	public int insertCodeDtl(Map<String, Object> param) {
+		System.out.println("코드 등록 시작");
+		int result = hcncMapper.insertCodeDtl(param);
+		System.out.println("코드 등록 완료");
+		return result;
+	}
+	
+	// 수정 
+	@Transactional
+	public int updateBoard(Map<String, Object> param) {
 		System.out.println("수정 시작");
 		int result = hcncMapper.updateBoard(param);
 		System.out.println("수정 끝");
@@ -60,12 +97,52 @@ public class HcncService extends EgovAbstractServiceImpl{
 	}
 	
 	@Transactional
-	public int deleteBoard(int boardNo) {
-		System.out.println("삭제 시작");
-		int result = hcncMapper.deleteBoard(boardNo);
+	public int updateCode(Map<String, Object> param) {
+		System.out.println("수정 시작");
+		int result = hcncMapper.updateCode(param);
 		System.out.println("수정 끝");
 		return result;
-		}
-
 	}
+	
+	@Transactional
+	public int updateCodeDtl(Map<String, Object> param) {
+		System.out.println("수정 시작");
+		int result = hcncMapper.updateCodeDtl(param);
+		System.out.println("수정 끝");
+		return result;
+	}
+	
+	// 삭제
+	@Transactional
+	public int deleteBoard(int boardNo) {
+		System.out.println("삭제 시작");
+		int result = hcncMapper.updateDelYN(boardNo);
+		System.out.println("삭제 끝");
+		return result;
+		}
+	
+	@Transactional
+	public int deleteBoardList(List<String> boardNoList) {
+		System.out.println("삭제 시작");
+		int result = hcncMapper.updateDelYNlist(boardNoList);
+		System.out.println("삭제 끝");
+		return result;
+	}
+	
+	@Transactional
+	public int deleteCode(String code) {
+		System.out.println("삭제 시작");
+		int result = hcncMapper.deleteCode(code);
+		System.out.println("삭제 끝");
+		return result;
+	}
+	
+	@Transactional
+	public int deleteCodeDtl(HashMap<String, Object> param) {
+		System.out.println("삭제 시작");
+		int result = hcncMapper.deleteCodeDtl(param);
+		System.out.println("삭제 끝");
+		return result;
+	}
+}
 
