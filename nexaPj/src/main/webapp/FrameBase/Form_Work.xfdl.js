@@ -23,8 +23,8 @@
 
 
             obj = new Dataset("dsList", this);
-            obj.set_useclientlayout("false");
-            obj._setContents("<ColumnInfo><Column id=\"BOARD_NO\" type=\"STRING\" size=\"256\"/><Column id=\"TITLE\" type=\"STRING\" size=\"256\"/><Column id=\"CONT\" type=\"STRING\" size=\"256\"/><Column id=\"WRITER\" type=\"STRING\" size=\"256\"/><Column id=\"CHK\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            obj.set_useclientlayout("true");
+            obj._setContents("<ColumnInfo><Column id=\"BOARD_NO\" type=\"STRING\" size=\"256\"/><Column id=\"TITLE\" type=\"STRING\" size=\"256\"/><Column id=\"CONT\" type=\"STRING\" size=\"256\"/><Column id=\"WRITER\" type=\"STRING\" size=\"256\"/><Column id=\"CHK\" type=\"STRING\" size=\"256\"/><Column id=\"BOARD_TYPE_NM\" type=\"STRING\" size=\"256\"/><Column id=\"CATEGORY_NM\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
             this.addChild(obj.name, obj);
 
 
@@ -78,7 +78,7 @@
             obj = new Grid("grdList","50","108","520","300",null,null,null,null,null,null,this);
             obj.set_taborder("5");
             obj.set_binddataset("dsList");
-            obj._setContents("<Formats><Format id=\"default\"><Columns><Column size=\"48\"/><Column size=\"80\"/><Column size=\"80\"/><Column size=\"80\"/><Column size=\"80\"/><Column size=\"79\"/><Column size=\"86\"/><Column size=\"97\"/></Columns><Rows><Row size=\"24\" band=\"head\"/><Row size=\"24\"/></Rows><Band id=\"head\"><Cell/><Cell col=\"1\" text=\"BOARD_NO\"/><Cell col=\"2\" text=\"TITLE\"/><Cell col=\"3\" text=\"CONT\"/><Cell col=\"4\" text=\"WRITER\"/><Cell col=\"5\" text=\"MODIFIER\"/><Cell col=\"6\" text=\"REG_DT\"/><Cell col=\"7\" text=\"MOD_DT\"/></Band><Band id=\"body\"><Cell edittype=\"checkbox\" text=\"bind:CHK\" displaytype=\"checkboxcontrol\" checkboxtruevalue=\"1\" checkboxfalsevalue=\"0\"/><Cell col=\"1\" text=\"bind:BOARD_NO\"/><Cell col=\"2\" text=\"bind:TITLE\"/><Cell col=\"3\" text=\"bind:CONT\"/><Cell col=\"4\" text=\"bind:WRITER\"/><Cell col=\"5\" text=\"bind:MODIFIER\"/><Cell col=\"6\" text=\"bind:REG_DT\"/><Cell col=\"7\" text=\"bind:MOD_DT\"/></Band></Format></Formats>");
+            obj._setContents("<Formats><Format id=\"default\"><Columns><Column size=\"48\"/><Column size=\"80\"/><Column size=\"80\"/><Column size=\"80\"/><Column size=\"80\"/><Column size=\"79\"/><Column size=\"86\"/><Column size=\"97\"/><Column size=\"112\"/><Column size=\"100\"/><Column size=\"81\"/><Column size=\"75\"/></Columns><Rows><Row size=\"24\" band=\"head\"/><Row size=\"24\"/></Rows><Band id=\"head\"><Cell/><Cell col=\"1\" text=\"BOARD_NO\"/><Cell col=\"2\" text=\"TITLE\"/><Cell col=\"3\" text=\"CONT\"/><Cell col=\"4\" text=\"WRITER\"/><Cell col=\"5\" text=\"MODIFIER\"/><Cell col=\"6\" text=\"REG_DT\"/><Cell col=\"7\" text=\"MOD_DT\"/><Cell col=\"8\" text=\"BOARD_TYPE_NM\"/><Cell col=\"9\" text=\"CATEGORY_NM\"/><Cell col=\"10\"/><Cell col=\"11\"/></Band><Band id=\"body\"><Cell edittype=\"checkbox\" text=\"bind:CHK\" displaytype=\"checkboxcontrol\" checkboxtruevalue=\"1\" checkboxfalsevalue=\"0\"/><Cell col=\"1\" text=\"bind:BOARD_NO\"/><Cell col=\"2\" text=\"bind:TITLE\"/><Cell col=\"3\" text=\"bind:CONT\"/><Cell col=\"4\" text=\"bind:WRITER\"/><Cell col=\"5\" text=\"bind:MODIFIER\"/><Cell col=\"6\" text=\"bind:REG_DT\"/><Cell col=\"7\" text=\"bind:MOD_DT\"/><Cell col=\"8\" text=\"bind:BOARD_TYPE_NM\"/><Cell col=\"9\" text=\"bind:CATEGORY_NM\"/><Cell col=\"10\"/><Cell col=\"11\"/></Band></Format></Formats>");
             this.addChild(obj.name, obj);
 
             obj = new Button("btnCode","602","170","188","60",null,null,null,null,null,null,this);
@@ -142,8 +142,13 @@
         {
         	this.dsSearch.clearData(); // dataSet의 데이터만 지우는 메소드(칼럼 유지)
         	this.dsSearch.addRow();	// dataSet에 행을 추가하는 메소드, 행 위치를 return해줌
-        	this.btnSearch_onclick();
+
         	this.fnSearchType();
+        	this.dsSearch.setColumn(0, "searchCmb", "ALL"); // datset에 값 부여(행, 칼럼id, 값)
+        	this.dsSearch.setColumn(0, "searchBoardType", "");
+        	this.dsSearch.setColumn(0, "searchCategory", "");
+        	this.btnSearch_onclick();
+        	//this.dsSearch.setColumn(0, "searchVal", searchVal); // datset에 값 부여(행, 칼럼id, 값)
         };
 
         // 검색하는 이벤트
@@ -194,26 +199,26 @@
         // 선택한 게시글을 삭제하는 이벤트
         this.btnDelete_onclick = function(obj,e)
         {
-        	console.log(this.dsList.findRow("CHK", "1"));
+        //	console.log(this.dsList.findRow("CHK", "1"));
         // 	if(this.dsList.findRow("CHK", "1") == -1) {
         // 		alert("체크된 게시물이 없습니다");
         // 		return;
         // 	}
 
+        	var del = [];
+        	var length = this.dsList.getRowCount();
+        	for(var i = 0; i<length; i++){
+        		if(this.dsList.getColumn(i, "CHK") == "1") {
+        			del.push(this.dsList.getColumn(i, "BOARD_NO"));
+        		}
+        	}
+
+        	if(del.length === 0) {
+        		alert("삭제할 게시글을 선택해주세요.");
+        		return;
+        	}
+
         	if(confirm("선택하신 게시물을 삭제하시겠습니까?")) {
-        		var del = [];
-        		var length = this.dsList.getRowCount();
-        		for(var i = 0; i<length; i++){
-        			if(this.dsList.getColumn(i, "CHK") == 1) {
-        				del.push(this.dsList.getColumn(i, "BOARD_NO"));
-        			}
-        		}
-
-        		if(del.length === 0) {
-        			alert("삭제할 게시글을 선택해주세요.");
-        			return;
-        		}
-
         		var serviceId = "deleteBoard";
         		var callUrl = "DataSrv::deleteBoardList.do";
         		var callBackFn = "fnCallback";
@@ -228,6 +233,21 @@
         	}
 
         };
+
+
+
+        // boardType, category 바인딩
+         this.fnSearchType = function() {
+         	this.transaction("selectCode"
+        					, "DataSrv::selectCode.do"
+         					, ""
+        					, "dsAllCode=dsAllCode"
+        					, ""
+         					, "fnCallback"
+         					, true
+         	)
+         }
+
 
 
         //과장님 로직
@@ -253,17 +273,7 @@
         //
         // };
 
-        // boardType, category 바인딩
-         this.fnSearchType = function() {
-         	this.transaction("selectCode"
-        					, "DataSrv::selectCode.do"
-         					, ""
-        					, "dsAllCode=dsAllCode"
-        					, ""
-         					, "fnCallback"
-         					, true
-         	)
-         }
+
 
         // 콜백 함수
         this.fnCallback = function(strSvcID, nErrorCode, strErrorMag) {
@@ -288,13 +298,14 @@
         		this.dsAllCode.filter("PT_CODE == 'CATEGORY'");
         		this.dsCategoryCmb.copyData(this.dsAllCode, true);
 
-
-
         		this.dsCategoryCmb.insertRow(0);
         		this.dsCategoryCmb.setColumn(0,"CODE","");
         		this.dsCategoryCmb.setColumn(0,"CODE_NM","전체");
 
         		this.dsAllCode.filter("");
+
+         		this.cmbBoardType.set_value("");
+         		this.cmbCategory.set_value("");
         	}
         }
 

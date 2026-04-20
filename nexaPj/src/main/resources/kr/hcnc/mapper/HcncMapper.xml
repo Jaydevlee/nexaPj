@@ -50,26 +50,27 @@
 	 -->
 	
 	<select id = "selectBoard" parameterType="Map" resultType="Map">
-	SELECT BOARD.BOARD_NO, BOARD.TITLE, BOARD.CONT
-		, BOARD.WRITER, BOARD.MODIFIER, BOARD.REG_DT
-		, BOARD.MOD_DT, BOARD.DELETE_YN
-		, DTL01.CODE_NM as BOARD_TYPE_NM
-		, DTL02.CODE_NM as CATEGORY_NM
-	FROM HCNC.hcnc_board as BOARD 
-	  	LEFT OUTER JOIN HCNC.COM_CD_DTL as DTL01
-			ON BOARD.BOARD_TYPE = DTL01.CODE
-			AND DTL01.PT_CODE = 'BOARD_TYPE'
-		LEFT OUTER JOIN HCNC.COM_CD_DTL as DTL02
-			ON BOARD.CATEGORY = DTL02.CODE
-			AND DTL02.PT_CODE = 'CATEGORY'
-	 WHERE 1=1
+		SELECT BOARD.BOARD_NO, BOARD.TITLE, BOARD.CONT
+			, BOARD.WRITER, BOARD.MODIFIER, BOARD.REG_DT
+			, BOARD.MOD_DT, BOARD.DELETE_YN
+			, DTL01.CODE_NM as BOARD_TYPE_NM
+			, DTL02.CODE_NM as CATEGORY_NM
+			, 0 AS CHK
+		FROM HCNC.hcnc_board as BOARD 
+		  	LEFT OUTER JOIN HCNC.COM_CD_DTL as DTL01
+				ON BOARD.BOARD_TYPE = DTL01.CODE
+				AND DTL01.PT_CODE = 'BOARD_TYPE'
+			LEFT OUTER JOIN HCNC.COM_CD_DTL as DTL02
+				ON BOARD.CATEGORY = DTL02.CODE
+				AND DTL02.PT_CODE = 'CATEGORY'
+		 WHERE 1=1
 	 	<if test='boardNo != null and boardNo != ""'>
 			AND	BOARD.BOARD_NO=#{boardNo}
 		</if>
 		<if test='searchVal != null and searchVal != ""'>
 		<choose>
 			<when test='searchCmb == "ALL"' >
-			AND (
+			AND (	
 				 BOARD.TITLE LIKE CONCAT('%', #{searchVal}, '%')
 				OR BOARD.CONT LIKE CONCAT('%', #{searchVal}, '%')
 			)
@@ -119,8 +120,8 @@
 	</select>
 	
 	<select id="selectCodeList" parameterType="Map" resultType="Map">
-		SELECT CODE AS 코드
-			, CODE_NM AS 코드명
+		SELECT CODE
+			, CODE_NM
 			FROM HCNC.COM_CD_MST
 		WHERE 1=1
 		<if test='searchVal != null and searchVal != ""'>
@@ -142,27 +143,41 @@
 	</select>
  	
 	<select id="selectCodeListDtl" parameterType="Map" resultType="Map">
-		SELECT CODE AS 코드
-			, CODE_NM AS 코드명
+		SELECT PT_CODE
+			,CODE
+			,CODE_NM
 			FROM HCNC.COM_CD_DTL
 		WHERE 1=1
-		<if test='searchVal != null and searchVal != ""'>
-		<choose>
-			<when test='searchCmb == "ALL"' >
-			AND (
-				 CODE LIKE CONCAT('%', #{searchVal}, '%')
-				OR CODE_NM LIKE CONCAT('%', #{searchVal}, '%')
-			)
-			</when>
-			<when test='searchCmb == "CODE"' >
-				AND CODE LIKE CONCAT('%', #{searchVal}, '%')
-			</when>
-			<when test='searchCmb == "CODE_NM"' >
-				AND CODE_NM LIKE CONCAT('%', #{searchVal}, '%')
-			</when>
-		</choose>
+		<if test='searchValDtl != null and searchValDtl != ""'>
+			<choose>
+				<when test='searchCmbDtl == "ALL"' >
+				AND (
+					 CODE LIKE CONCAT('%', #{searchValDtl}, '%')
+					OR CODE_NM LIKE CONCAT('%', #{searchValDtl}, '%')
+				)
+				</when>
+				<when test='searchCmbDtl == "CODE"' >
+					AND CODE LIKE CONCAT('%', #{searchValDtl}, '%')
+				</when>
+				<when test='searchCmbDtl == "CODE_NM"' >
+					AND CODE_NM LIKE CONCAT('%', #{searchValDtl}, '%')
+				</when>
+			</choose>
+		</if>
+		<if test='ptCode != null and ptCode != ""'>
+			AND PT_CODE = #{ptCode}
 		</if>
 	</select>
+	
+	<select id="selectCode" parameterType="Map" resultType="Map">
+		SELECT PT_CODE
+			, CODE
+			, CODE_NM
+		FROM HCNC.COM_CD_DTL 
+	</select>
+	
+	
+	<!-- insert -->
 	<!-- useGeneratedKyes=마지막으로 생성된 PK의 값을 가져옴, keyProperty: 키를 담을 변수 명 -->
 	<insert id="insertBoard" parameterType="Map" useGeneratedKeys="true" keyProperty="boardNo">
 		INSERT INTO HCNC.HCNC_BOARD(TITLE, CONT, WRITER, MODIFIER, BOARD_TYPE, CATEGORY)
@@ -174,6 +189,12 @@
 		VALUES (#{CODE}, #{CODE_NM})
 	</insert>
 	
+	<insert id="insertCodeDtl" parameterType="Map">
+		INSERT INTO HCNC.COM_CD_DTL(PT_CODE, CODE, CODE_NM)
+		VALUES (#{PT_CODE}, #{CODE}, #{CODE_NM})
+	</insert>
+	
+	<!-- update -->
 	<update id="updateBoard" parameterType="Map">
 		UPDATE HCNC.HCNC_BOARD
 		SET TITLE=#{TITLE},
@@ -186,12 +207,34 @@
 	</update>
 	
 	<update id="updateCode" parameterType="Map">
-		UPDATE CNC.COM_CD_MST
+		UPDATE HCNC.COM_CD_MST
 			SET CODE_NM = #{CODE_NM}
-		WEHRE CODE = #{CODE}
-			
+		WHERE CODE = #{CODE}
 	</update>
 	
+	<update id="updateCodeDtl" parameterType="Map">
+		UPDATE HCNC.COM_CD_DTL
+			SET CODE_NM = #{CODE_NM}
+		WHERE CODE = #{CODE}
+			AND PT_CODE=#{PT_CODE}
+	</update>
+	
+	<update id="updateDelYN" parameterType="int">
+		UPDATE HCNC.HCNC_BOARD
+			SET DELETE_YN = 'Y'
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<update id="updateDelYNlist" parameterType="java.util.List">
+		UPDATE HCNC.HCNC_BOARD
+			SET DELETE_YN = 'Y'
+		WHERE BOARD_NO IN
+		<foreach collection="list" item="boardNo" open="(" close=")" separator=",">
+			#{boardNo}
+		</foreach>
+	</update>
+	
+	<!-- delete -->
 	<delete id="deleteBoard" parameterType="int">
 		DELETE FROM HCNC.HCNC_BOARD WHERE BOARD_NO=#{boardNo}
 	</delete>
@@ -204,12 +247,14 @@
 		</foreach>
 	</delete>
 	
-	<select id="selectCode" parameterType="Map" resultType="Map">
-		SELECT PT_CODE
-			, CODE
-			, CODE_NM
-		FROM HCNC.COM_CD_DTL 
-	</select>
+	<delete id="deleteCode" parameterType="String">
+		DELETE FROM HCNC.COM_CD_MST
+		WHERE CODE=#{code}
+	</delete>
 	
-	
+	<delete id="deleteCodeDtl" parameterType="Map">
+		DELETE FROM HCNC.COM_CD_DTL
+		WHERE CODE=#{code}
+			AND PT_CODE=#{ptCode}
+	</delete>
 </mapper>

@@ -42,16 +42,12 @@ public class HcncController {
 	NexacroResult result = new NexacroResult();
 	HashMap<String, Object> param = new HashMap<String, Object>();
 	
-	// param에 값 추하여 호출
-//    	param.put("searchCmb", searchCmb);
-//    	param.put("searchVal", searchVal);
-	
 	param.put("searchCmb", searchCmb);
 	param.put("searchVal", searchVal);
 	param.put("boardNo", boardNo);
 	param.put("searchBoardType", searchBoardType);
 	param.put("searchCategory", searchCategory);
-	//param.putAll(dsSearch); // 잘 사용하지 않는다.
+	//param.putAll(dsSearch);
 	
 	//param = (HashMap)dsSearch;
     System.out.println(hcncService.selectBoardList(param));
@@ -59,39 +55,6 @@ public class HcncController {
 	return result;
 	}
 
-	@RequestMapping(value="/selectCodeList.do")
-	public NexacroResult selectCodeList(@ParamVariable(name="searchCmb", required=false) String searchCmb,
-										@ParamVariable(name="searchVal", required=false) String searchVal,
-										@ParamDataSet(name="dsSearch", required=false) Map<String, Object> dsSearch) {
-		System.out.println("searchCmb=" + searchCmb);
-		System.out.println("searchVal=" + searchVal);
-		System.out.println("dsSearch=" + dsSearch);
-		NexacroResult result = new NexacroResult();
-		HashMap<String, Object> param = new HashMap<String, Object>();
-		param.put("searchCmb", searchCmb);
-		param.put("searchVal", searchVal);
-		System.out.println(hcncService.selectCodeList(param));
-	    result.addDataSet("dsCodeList", hcncService.selectCodeList(param));
-		return result;
-		
-	}
-	
-	@RequestMapping(value="/selectCodeListDtl.do")
-	public NexacroResult selectCodeListDtl(@ParamVariable(name="searchCmb", required=false) String searchCmb,
-										@ParamVariable(name="searchVal", required=false) String searchVal,
-										@ParamDataSet(name="dsSearchDtl", required=false) Map<String, Object> dsSearchDtl) {
-		System.out.println("searchCmb=" + searchCmb);
-		System.out.println("searchVal=" + searchVal);
-		System.out.println("dsSearch=" + dsSearchDtl);
-		NexacroResult result = new NexacroResult();
-		HashMap<String, Object> param = new HashMap<String, Object>();
-		param.put("searchCmb", searchCmb);
-		param.put("searchVal", searchVal);
-		System.out.println(hcncService.selectCodeListDtl(param));
-	    result.addDataSet("dsCodeListDtl", hcncService.selectCodeListDtl(param));
-		return result;
-		
-	}
 	
 	// insertBoard
 	@RequestMapping(value="/insertBoard.do")
@@ -162,22 +125,6 @@ public class HcncController {
 		return result;
 	};
 	
-	
-	//insertCode
-	@RequestMapping(value="/insertCode.do")
-	public NexacroResult insertCode(@ParamDataSet(name="dsBoardDetail") Map<String, Object> dsCodeList) {
-		NexacroResult result = new NexacroResult();
-		int insertResult = hcncService.insertCode(dsCodeList);
-		if(insertResult > 0 ) {
-			result.addVariable("ErrorCode", 0);
-			result.addVariable("ErrorMsg", "코드 등록이 완료되었습니다.");
-		} else {
-			result.addVariable("ErrorCode", -1);
-			result.addVariable("ErrorMsg", "코드가 등록되지 않았습니다.");
-		}
-		return result;
-	}
-	
 	//selectCode
 	@RequestMapping(value="/selectCode.do")
 	public NexacroResult selectCode() {
@@ -230,6 +177,7 @@ public class HcncController {
 //		param.put("TITLE", title);
 //		param.put("CONT", cont);
 //		param.put("Modifier", modifier);
+//		int updateResult = hcncService.updateBoard(param);
 		int updateResult = hcncService.updateBoard(dsBoardDetail);
 		
 		if(updateResult > 0 ) {
@@ -243,18 +191,59 @@ public class HcncController {
 	};
 	
 	
-	public NexacroResult updateCode(@ParamDataSet(name="dsBoardDetail") Map<String, Object> dsCodeList) {
+	@RequestMapping(value="/deleteBoard.do")
+	public NexacroResult deleteBoard(@ParamVariable(name="boardNo") int boardNo) {
 		NexacroResult result = new NexacroResult();
-		int updateResult = hcncService.updateCode(dsCodeList);
-		if(updateResult > 0 ) {
+		int deleteResult = hcncService.deleteBoard(boardNo);
+		if(deleteResult > 0) {
 			result.addVariable("ErrorCode", 0);
-			result.addVariable("ErrorMsg", "코드명이 수정되었습니다.");
+			result.addVariable("ErrorMsg", "게시글이 삭제되었습니다.");
 		} else {
 			result.addVariable("ErrorCode", -1);
-			result.addVariable("ErrorMsg", "코드명이 수정되지 않았습니다.");
-		}
+			result.addVariable("ErrorMsg", "게시글이 삭제되지 않았습니다.");
+		};
 		return result;
 	}
+	
+	
+	
+	
+	@RequestMapping(value="/deleteBoardList.do")
+	public NexacroResult deleteBoard(@ParamVariable(name="boardNo") String boardNo) {
+		List<String> boardNoList = Arrays.asList(boardNo.split(","));
+		System.out.println(boardNoList);
+		NexacroResult result = new NexacroResult();
+		
+		int deleteResult = hcncService.deleteBoardList(boardNoList);
+		if(deleteResult > 0) {
+			result.addVariable("ErrorCode", 0);
+			result.addVariable("ErrorMsg", "게시글이 삭제되었습니다.");
+		} else {
+			result.addVariable("ErrorCode", -1);
+			result.addVariable("ErrorMsg", "게시글이 삭제되지 않았습니다.");	
+		};
+		return result;
+	}
+	
+
+	
+	// deleteBoard 과장님 로직
+//		@RequestMapping(value="/deleteBoard.do")
+//		public NexacroResult deleteBoard(@ParamVariable(name="boardNo")  Map<String, Object> dsBoardDetail) {
+//			NexacroResult result = new NexacroResult();
+//			Map<String, Object> param = new HashMap<>();
+//			param.put("BOARD_NO", dsBoardDetail.get("BOARD_NO");
+//			int deleteResult = hcncService.deleteBoard(param);
+//			if(deleteResult > 0) {
+//				result.addVariable("ErrorCode", 0);
+//				result.addVariable("ErrorMsg", "게시글이 삭제되었습니다.");
+//			} else {
+//				result.addVariable("ErrorCode", -1);
+//				result.addVariable("ErrorMsg", "게시글이 삭제되지 않았습니다.");
+//			};
+//			return result;
+//		}
+	
 	
 	// 과장님 update 로직
 //	@RequestMapping(value="/updateBoard.do")
@@ -298,54 +287,9 @@ public class HcncController {
 //		return result;
 //	};
 	
-	@RequestMapping(value="/deleteBoard.do")
-	public NexacroResult deleteBoard(@ParamVariable(name="boardNo") int boardNo) {
-		NexacroResult result = new NexacroResult();
-		int deleteResult = hcncService.deleteBoard(boardNo);
-		if(deleteResult > 0) {
-			result.addVariable("ErrorCode", 0);
-			result.addVariable("ErrorMsg", "게시글이 삭제되었습니다.");
-		} else {
-			result.addVariable("ErrorCode", -1);
-			result.addVariable("ErrorMsg", "게시글이 삭제되지 않았습니다.");
-		};
-		return result;
-	}
-	
-	// deleteBoard 과장님 로직
-//	@RequestMapping(value="/deleteBoard.do")
-//	public NexacroResult deleteBoard(@ParamVariable(name="boardNo")  Map<String, Object> dsBoardDetail) {
-//		NexacroResult result = new NexacroResult();
-//		Map<String, Object> param = new HashMap<>();
-//		param.put("BOARD_NO", dsBoardDetail.get("BOARD_NO");
-//		int deleteResult = hcncService.deleteBoard(param);
-//		if(deleteResult > 0) {
-//			result.addVariable("ErrorCode", 0);
-//			result.addVariable("ErrorMsg", "게시글이 삭제되었습니다.");
-//		} else {
-//			result.addVariable("ErrorCode", -1);
-//			result.addVariable("ErrorMsg", "게시글이 삭제되지 않았습니다.");
-//		};
-//		return result;
-//	}
 	
 	
-	@RequestMapping(value="/deleteBoardList.do")
-	public NexacroResult deleteBoard(@ParamVariable(name="boardNo") String boardNo) {
-		List<String> boardNoList = Arrays.asList(boardNo.split(","));
-		System.out.println(boardNoList);
-		NexacroResult result = new NexacroResult();
-		
-		int deleteResult = hcncService.deleteBoardList(boardNoList);
-		if(deleteResult > 0) {
-			result.addVariable("ErrorCode", 0);
-			result.addVariable("ErrorMsg", "게시글이 삭제되었습니다.");
-		} else {
-			result.addVariable("ErrorCode", -1);
-			result.addVariable("ErrorMsg", "게시글이 삭제되지 않았습니다.");	
-		};
-		return result;
-	}
+	
 	
 //	@RequestMapping(value="/deleteBoardList.do")
 //	public NexacroResult deleteBoard(@ParamVariable(name="boardNo") List<Map<String, Object>> dsList) {
@@ -362,6 +306,4 @@ public class HcncController {
 //		}
 //		return result;
 //	}
-	
-	
 };

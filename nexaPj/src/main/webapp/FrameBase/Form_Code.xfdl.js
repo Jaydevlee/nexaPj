@@ -33,17 +33,17 @@
 
 
             obj = new Dataset("dsSearchDtl", this);
-            obj._setContents("<ColumnInfo><Column id=\"searchCmbDtl\" type=\"STRING\" size=\"256\"/><Column id=\"searchValDtl\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            obj._setContents("<ColumnInfo><Column id=\"searchCmbDtl\" type=\"STRING\" size=\"256\"/><Column id=\"searchValDtl\" type=\"STRING\" size=\"256\"/><Column id=\"ptCode\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
             this.addChild(obj.name, obj);
 
 
             obj = new Dataset("dsCodeList", this);
-            obj._setContents("<ColumnInfo><Column id=\"코드\" type=\"STRING\" size=\"256\"/><Column id=\"코드명\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            obj._setContents("<ColumnInfo><Column id=\"CODE\" type=\"STRING\" size=\"256\"/><Column id=\"CODE_NM\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
             this.addChild(obj.name, obj);
 
 
             obj = new Dataset("dsCodeListDtl", this);
-            obj._setContents("<ColumnInfo><Column id=\"코드\" type=\"STRING\" size=\"256\"/><Column id=\"코드명\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            obj._setContents("<ColumnInfo><Column id=\"CODE\" type=\"STRING\" size=\"256\"/><Column id=\"CODE_NM\" type=\"STRING\" size=\"256\"/><Column id=\"PT_CODE\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
             this.addChild(obj.name, obj);
             
             // UI Components Initialize
@@ -87,7 +87,7 @@
             obj = new Grid("grdList","30","105","445","384",null,null,null,null,null,null,this);
             obj.set_taborder("7");
             obj.set_binddataset("dsCodeList");
-            obj._setContents("<Formats><Format id=\"default\"><Columns><Column size=\"80\"/><Column size=\"122\"/></Columns><Rows><Row size=\"24\" band=\"head\"/><Row size=\"24\"/></Rows><Band id=\"head\"><Cell text=\"코드\"/><Cell col=\"1\" text=\"코드명\"/></Band><Band id=\"body\"><Cell text=\"bind:코드\"/><Cell col=\"1\" text=\"bind:코드명\"/></Band></Format></Formats>");
+            obj._setContents("<Formats><Format id=\"default\"><Columns><Column size=\"80\"/><Column size=\"122\"/></Columns><Rows><Row size=\"24\" band=\"head\"/><Row size=\"24\"/></Rows><Band id=\"head\"><Cell text=\"코드\"/><Cell col=\"1\" text=\"코드명\"/></Band><Band id=\"body\"><Cell text=\"bind:CODE\"/><Cell col=\"1\" text=\"bind:CODE_NM\"/></Band></Format></Formats>");
             this.addChild(obj.name, obj);
 
             obj = new Edit("edtCode","74","515","116","32",null,null,null,null,null,null,this);
@@ -149,7 +149,7 @@
             obj = new Grid("grdListDtl","624","105","445","384",null,null,null,null,null,null,this);
             obj.set_taborder("19");
             obj.set_binddataset("dsCodeListDtl");
-            obj._setContents("<Formats><Format id=\"default\"><Columns><Column size=\"80\"/><Column size=\"135\"/></Columns><Rows><Row size=\"24\" band=\"head\"/><Row size=\"24\"/></Rows><Band id=\"head\"><Cell text=\"코드\"/><Cell col=\"1\" text=\"코드명\"/></Band><Band id=\"body\"><Cell text=\"bind:코드\"/><Cell col=\"1\" text=\"bind:코드명\"/></Band></Format></Formats>");
+            obj._setContents("<Formats><Format id=\"default\"><Columns><Column size=\"80\"/><Column size=\"135\"/></Columns><Rows><Row size=\"24\" band=\"head\"/><Row size=\"24\"/></Rows><Band id=\"head\"><Cell text=\"코드\"/><Cell col=\"1\" text=\"코드명\"/></Band><Band id=\"body\"><Cell text=\"bind:CODE\"/><Cell col=\"1\" text=\"bind:CODE_NM\"/></Band></Format></Formats>");
             this.addChild(obj.name, obj);
 
             obj = new Edit("edtCodeDtl","668","515","116","32",null,null,null,null,null,null,this);
@@ -192,19 +192,19 @@
             this.addChild(obj.name, obj);
             obj.bind();
 
-            obj = new BindItem("item4","edtCode","value","dsCodeList","코드");
+            obj = new BindItem("item4","edtCode","value","dsCodeList","CODE");
             this.addChild(obj.name, obj);
             obj.bind();
 
-            obj = new BindItem("item5","edtCodeNm","value","dsCodeList","코드명");
+            obj = new BindItem("item5","edtCodeNm","value","dsCodeList","CODE_NM");
             this.addChild(obj.name, obj);
             obj.bind();
 
-            obj = new BindItem("item6","edtCodeDtl","value","dsCodeListDtl","코드");
+            obj = new BindItem("item6","edtCodeDtl","value","dsCodeListDtl","CODE");
             this.addChild(obj.name, obj);
             obj.bind();
 
-            obj = new BindItem("item7","edtCodeNmDtl","value","dsCodeListDtl","코드명");
+            obj = new BindItem("item7","edtCodeNmDtl","value","dsCodeListDtl","CODE_NM");
             this.addChild(obj.name, obj);
             obj.bind();
             
@@ -226,7 +226,7 @@
         	this.dsSearchDtl.clearData();
         	this.dsSearchDtl.addRow();
 
-            // (선택 사항) 행이 추가된 후, 콤보박스 초기값을 "ALL" 등으로 세팅하고 싶다면
+
             this.dsSearch.setColumn(0, "searchCmb", "ALL");
         	this.dsSearchDtl.setColumn(0, "searchCmbDtl", "ALL");
         };
@@ -259,34 +259,116 @@
 
         this.btnSelectDtl_onclick = function(obj,e)
         {
-        	var objApp = nexacro.getApplication();
-        	var searchCmb = this.cmbSearch.value;
-        	var searchVal = this.edtSearch.value;
+         	var objApp = nexacro.getApplication();
+        	var searchCmbDtl = this.cmbSearchDtl.value;
+        	var searchValDtl = this.edtSearchDtl.value;
 
-        	if(searchCmb == undefined) {
-        		searchCmb = "";
+        	if(searchCmbDtl == undefined) {
+        		searchCmbDtl = "";
         	}
-        	if(searchVal == undefined) {
-        		searchVal = "";
+        	if(searchValDtl == undefined) {
+        		searchValDtl = "";
         	}
 
-        	this.transaction( "selectCodeListDtl"            	// 서비스ID (임의 지정 가능)
-        						,"DataSrv::selectCodeListDtl.do" 	// 호출 URL http://localhost/nexaPj/selectList.do (TypeDefinition에서 설정)
-        						,"dsSearch=dsSearch"		// 데이터를 넘길 dataset ([nexa]에서 보내는 dataset id = java에서 받는 datasetId 여러개는 ' '공백으로 구분하여 처리)
-        						,"dsCodeListDtl=dsCodeListDtl"			// 데이터를 받을 dataset (nexa에서 받는 datasetId = java에서 보내는 datasetId 여러개는 ' '공백으로 구분하여 처리))
-        						,"searchCmb="+searchCmb
-        						+" searchVal="+searchVal	// 파라미터로 넘길 값	(key=value 여러개는 ' '공백으로 구분하여 처리)) , <- 여러개 필요한 경우
-        						,"fnCallback"
-        						,true
-        						);
-
+        	this.fnSelectCodeDtl(searchCmbDtl, searchValDtl, "");
         };
+
+        // grid에서 코드 클릭 이벤트
+        this.dsCodeList_onrowposchanged = function(obj,e)
+        {
+        	if(e.newrow < 0) return;
+
+
+
+        	var nRowType = obj.getRowType(e.newrow); // 이벤트가 발생한 행의 현재 상태
+        	if(nRowType == obj.ROWTYPE_INSERT){
+        		this.edtCode.set_readonly(false);
+        	} else {
+        		this.edtCode.set_readonly(true);
+        	}
+        	this.edtCodeNm.set_readonly(false);
+
+        	/*var nRow = this.dsCodeList.rowposition;*/
+        	/*var ptCode = this.dsCodeList.getColumn(nRow, "CODE");*/
+        	var ptCode = obj.getColumn(e.newrow, "CODE");
+        	this.mst_ptCode = ptCode;
+
+        	this.btnAddDtl.set_enable(false);
+
+        	this.fnSelectCodeDtl("", "", ptCode);
+        };
+
+        this.dsCodeListDtl_onrowposchanged = function(obj,e)
+        {
+        	if(e.newrow < 0) return;
+
+        	var nRowType = obj.getRowType(e.newrow); // 이벤트가 발생한 행의 현재 상태
+
+        	if(nRowType == obj.ROWTYPE_INSERT){
+        		this.edtCodeDtl.set_readonly(false);
+        	} else {
+        		var nRow = this.dsCodeListDtl.rowposition;
+        		var ptCode = this.dsCodeListDtl.getColumn(nRow, "PT_CODE");
+        		/*alert("This PT_CODE " + ptCode);*/
+        		this.edtCodeDtl.set_readonly(true);
+        	}
+        	this.edtCodeNmDtl.set_readonly(false);
+        };
+
+
+        this.fnSelectCodeDtl = function(searchCmbDtl, searchValDtl, ptCode) {
+
+        	if(searchCmbDtl == undefined) {
+        		searchCmbDtl = "";
+        	}
+        	if(searchValDtl == undefined) {
+        		searchValDtl = "";
+        	}
+        	this.transaction( "selectCodeListDtl"
+        					,"DataSrv::selectCodeListDtl.do"
+        					,"dsSearchDtl=dsSearchDtl"
+        					,"dsCodeListDtl=dsCodeListDtl"
+        					,"searchCmbDtl="+searchCmbDtl
+        					+" searchValDtl="+searchValDtl
+        					+" ptCode="+ptCode
+        					,"fnCallback"
+        					,false
+        					);
+        }
 
         // insert
         // insert할 행 추가
         this.btnAdd_onclick = function(obj,e)
         {
         	this.dsCodeList.addRow();
+        	this.edtCode.set_readonly(false);
+            this.edtCode.set_enable(true);
+            this.edtCodeNm.set_readonly(false);
+            this.edtCodeNm.set_enable(true);
+
+        	this.edtCode.set_value("");
+            this.edtCodeNm.set_value("");
+        };
+
+        this.btnAddDtl_onclick = function(obj,e)
+        {
+        	alert("mst_ptCode 값: " + this.mst_ptCode);
+            if(this.mst_ptCode == "" || this.mst_ptCode == undefined) {
+                alert("마스터 코드를 먼저 선택해주세요.");
+                return;
+            }
+
+            var nRow = this.dsCodeListDtl.addRow();
+
+            // 새 행 추가 시 PT_CODE 자동 세팅
+            this.dsCodeListDtl.setColumn(nRow, "PT_CODE", this.mst_ptCode);
+        	this.edtCodeDtl.set_readonly(false);
+            this.edtCodeDtl.set_enable(true);
+            this.edtCodeNmDtl.set_readonly(false);
+            this.edtCodeNmDtl.set_enable(true);
+
+        	this.edtCodeDtl.set_value("");
+            this.edtCodeNmDtl.set_value("");
         };
 
         this.btnSave_onclick = function(obj,e)
@@ -296,7 +378,7 @@
         		return;
         	}
 
-        	if(this.edtCodeNm.value  == undefined || this.edtCodeNm.trim() == "") {
+        	if(this.edtCodeNm.value  == undefined || this.edtCodeNm.value.trim() == "") {
         		alert("코드명을 입력해주세요");
         		return;
         	}
@@ -305,7 +387,7 @@
         	var callUrl = "";
         	var callBackFn = "fnCallback"
 
-        	if(this.edtCodeDtl.enable){
+        	if(this.edtCode.readonly == false){
         		serviceId = "insertCode"
         		callUrl = "DataSrv::insertCode.do";
         	} else {
@@ -324,49 +406,99 @@
         	}
         };
 
+        this.btnSaveDtl_onclick = function(obj,e)
+        {
+        	if(this.edtCodeDtl.value == undefined || this.edtCodeDtl.value.trim() == "") {
+        		alert("코드를 입력해주세요");
+        		return;
+        	}
+
+        	if(this.edtCodeNmDtl.value  == undefined || this.edtCodeNmDtl.value.trim() == "") {
+        		alert("코드명을 입력해주세요");
+        		return;
+        	}
+
+        	var serviceId = "";
+        	var callUrl = "";
+        	var callBackFn = "fnCallback"
+
+        	if(this.edtCodeDtl.readonly == false){
+        		serviceId = "insertCodeDtl"
+        		callUrl = "DataSrv::insertCodeDtl.do";
+        	} else {
+        		serviceId = "updateCodeDtl"
+        		callUrl = "DataSrv::updateCodeDtl.do";
+        	}
+
+        	alert(this.dsCodeListDtl.saveXML());
+        	if(confirm("저장하시겠습니까?")){
+        		this.transaction(serviceId
+        						,callUrl
+        						,"dsCodeListDtl=dsCodeListDtl:U"
+        						,""
+        						,""
+        						,callBackFn
+        						,true
+        						);
+        	}
+        };
+
+        this.btnDelete_onclick = function(obj,e)
+        {
+        	var code = this.edtCode.value;
+
+        	this.transaction("deleteCode"
+        					, "DataSrv::deleteCode.do"
+        					, ""
+        					, ""
+        					, "code="+code
+        					,"fnCallback"
+        					,true
+        					);
+        };
+
+
+
+        this.btnDeleteDtl_onclick = function(obj,e)
+        {
+        	//pt코드 가져오기
+        	var nRow = this.dsCodeListDtl.rowposition; // 삭제하려는 행의 위치
+            var ptCode = this.dsCodeListDtl.getColumn(nRow, "PT_CODE"); // 삭제 행의 ptcode
+        	var code = this.edtCodeDtl.value;
+        	alert("ptCode: " + ptCode + "\ncode: " + code);
+        	this.transaction("deleteCodeDtl"
+        					,"DataSrv::deleteCodeDtl.do"
+        					,""
+        					,""
+        					,"code="+code + " ptCode="+ptCode
+        					,"fnCallback"
+        					,true
+        					);
+        };
+
+
 
         // 콜백함수
         this.fnCallback = function(strSvcID, nErrorCode, strErrorMag) {
-        	if(strSvcID == "selectCodeList" || strSvcID == "selectCodeListDtl"){
-        		alert("callback :" + strSvcID);
-        		console.log(this.dsList.saveXML());
+        	if(strSvcID == "selectCodeList"){
+        		alert("callback : " + strSvcID + "\n" + strErrorMag);
+        		console.log(this.dsCodeList.saveXML());
+        	} else if(strSvcID == "selectCodeListDtl") {
+        		alert("selectCodeListDtl 콜백 탔음!");
+        		this.btnAddDtl.set_enable(true);
+        		alert("btnAddDtl enable 상태: " + this.btnAddDtl.enable);
         	} else if(strSvcID == "insertCode") {
-        		alert("callback : "+ strSvcID);
+        		alert("callback : " + strSvcID + "\n" + strErrorMag);
         	} else if(strSvcID == "updateCode") {
-        		alert("callback : "+ strSvcID);
+        		alert("callback : " + strSvcID + "\n" + strErrorMag);
+        	} else if(strSvcID == "insertCodeDtl" ){
+        		alert("callback : " + strSvcID + "\n" + strErrorMag);
+        	} else if(strSvcID == "updateCodeDtl") {
+        		alert("callback : " + strSvcID + "\n" + strErrorMag);
+        	} else if(strSvcID == "deleteCode" || strSvcID == "deleteCodeDtl") {
+        		alert("callback : " + strSvcID + "\n" + strErrorMag);
         	}
         };
-
-
-        // grid에서 코드 클릭 이벤트
-        this.dsCodeList_onrowposchanged = function(obj,e)
-        {
-        	if(e.newrow < 0) return;
-
-        	var nRowType = obj.getRowType(e.newrow);
-
-        	if(nRowType == obj.ROWTYPE_INSERT){
-        		this.edtCode.enable = true;
-        	} else {
-        		this.edtCode.enable = false;
-        	}
-        	this.edtCodeNm.enable = true;
-        };
-
-        this.dsCodeListDtl_onrowposchanged = function(obj,e)
-        {
-        	if(e.newrow < 0) return;
-
-        	var nRowType = obj.getRowType(e.newrow);
-
-        	if(nRowType == obj.ROWTYPE_INSERT){
-        		this.edtCodeDtl.enable = true;
-        	} else {
-        		this.edtCodeDtl.enable = false;
-        	}
-        	this.edtCodeNmDtl.enable = true;
-        };
-
 
 
         });
@@ -377,8 +509,12 @@
             this.addEventHandler("onload",this.Form_Code_onload,this);
             this.btnSelect.addEventHandler("onclick",this.btnSelect_onclick,this);
             this.btnSave.addEventHandler("onclick",this.btnSave_onclick,this);
+            this.btnDelete.addEventHandler("onclick",this.btnDelete_onclick,this);
             this.btnAdd.addEventHandler("onclick",this.btnAdd_onclick,this);
             this.btnSelectDtl.addEventHandler("onclick",this.btnSelectDtl_onclick,this);
+            this.btnSaveDtl.addEventHandler("onclick",this.btnSaveDtl_onclick,this);
+            this.btnDeleteDtl.addEventHandler("onclick",this.btnDeleteDtl_onclick,this);
+            this.btnAddDtl.addEventHandler("onclick",this.btnAddDtl_onclick,this);
             this.dsCodeList.addEventHandler("onrowposchanged",this.dsCodeList_onrowposchanged,this);
             this.dsCodeListDtl.addEventHandler("onrowposchanged",this.dsCodeListDtl_onrowposchanged,this);
         };

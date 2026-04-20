@@ -79,6 +79,13 @@ public class HcncService extends EgovAbstractServiceImpl{
 		return result;
 	}
 	
+	@Transactional
+	public int insertCodeDtl(Map<String, Object> param) {
+		System.out.println("코드 등록 시작");
+		int result = hcncMapper.insertCodeDtl(param);
+		System.out.println("코드 등록 완료");
+		return result;
+	}
 	
 	// 수정 
 	@Transactional
@@ -97,11 +104,19 @@ public class HcncService extends EgovAbstractServiceImpl{
 		return result;
 	}
 	
+	@Transactional
+	public int updateCodeDtl(Map<String, Object> param) {
+		System.out.println("수정 시작");
+		int result = hcncMapper.updateCodeDtl(param);
+		System.out.println("수정 끝");
+		return result;
+	}
+	
 	// 삭제
 	@Transactional
 	public int deleteBoard(int boardNo) {
 		System.out.println("삭제 시작");
-		int result = hcncMapper.deleteBoard(boardNo);
+		int result = hcncMapper.updateDelYN(boardNo);
 		System.out.println("삭제 끝");
 		return result;
 		}
@@ -109,11 +124,25 @@ public class HcncService extends EgovAbstractServiceImpl{
 	@Transactional
 	public int deleteBoardList(List<String> boardNoList) {
 		System.out.println("삭제 시작");
-		int result = hcncMapper.deleteBoardList(boardNoList);
+		int result = hcncMapper.updateDelYNlist(boardNoList);
 		System.out.println("삭제 끝");
 		return result;
-		}
+	}
 	
+	@Transactional
+	public int deleteCode(String code) {
+		System.out.println("삭제 시작");
+		int result = hcncMapper.deleteCode(code);
+		System.out.println("삭제 끝");
+		return result;
+	}
 	
+	@Transactional
+	public int deleteCodeDtl(HashMap<String, Object> param) {
+		System.out.println("삭제 시작");
+		int result = hcncMapper.deleteCodeDtl(param);
+		System.out.println("삭제 끝");
+		return result;
+	}
 }
 
