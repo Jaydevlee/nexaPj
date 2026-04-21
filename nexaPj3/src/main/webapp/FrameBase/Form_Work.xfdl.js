@@ -17,22 +17,32 @@
             }
             
             // Object(Dataset, ExcelExportObject) Initialize
-            obj = new Dataset("dsLoan", this);
-            obj._setContents("<ColumnInfo><Column id=\"loanId\" type=\"STRING\" size=\"256\"/><Column id=\"memberId\" type=\"STRING\" size=\"256\"/><Column id=\"name\" type=\"STRING\" size=\"256\"/><Column id=\"title\" type=\"STRING\" size=\"256\"/><Column id=\"loanDate\" type=\"STRING\" size=\"256\"/><Column id=\"returnDate\" type=\"STRING\" size=\"256\"/><Column id=\"status\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            obj = new Dataset("dsLoanList", this);
+            obj._setContents("<ColumnInfo><Column id=\"loan_id\" type=\"STRING\" size=\"256\"/><Column id=\"member_id\" type=\"STRING\" size=\"256\"/><Column id=\"name\" type=\"STRING\" size=\"256\"/><Column id=\"title\" type=\"STRING\" size=\"256\"/><Column id=\"loan_date\" type=\"STRING\" size=\"256\"/><Column id=\"return_date\" type=\"STRING\" size=\"256\"/><Column id=\"status\" type=\"STRING\" size=\"256\"/><Column id=\"CHK\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
             this.addChild(obj.name, obj);
 
 
             obj = new Dataset("dsSearchCmb", this);
-            obj._setContents("<ColumnInfo><Column id=\"code\" type=\"STRING\" size=\"256\"/><Column id=\"codeNm\" type=\"STRING\" size=\"256\"/></ColumnInfo><Rows><Row><Col id=\"code\">ALL</Col></Row><Row><Col id=\"code\">NAME</Col></Row><Row><Col id=\"code\">TITLE</Col></Row><Row><Col id=\"code\">STATUS</Col></Row></Rows>");
+            obj._setContents("<ColumnInfo><Column id=\"code\" type=\"STRING\" size=\"256\"/><Column id=\"codeNm\" type=\"STRING\" size=\"256\"/></ColumnInfo><Rows><Row><Col id=\"code\">ALL</Col><Col id=\"codeNm\">전체</Col></Row><Row><Col id=\"code\">NAME</Col><Col id=\"codeNm\">이름</Col></Row><Row><Col id=\"code\">TITLE</Col><Col id=\"codeNm\">제목</Col></Row><Row><Col id=\"code\">STATUS</Col><Col id=\"codeNm\">상태</Col></Row></Rows>");
             this.addChild(obj.name, obj);
 
 
             obj = new Dataset("dsSearch", this);
             obj._setContents("<ColumnInfo><Column id=\"searchCmb\" type=\"STRING\" size=\"256\"/><Column id=\"searchVal\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
             this.addChild(obj.name, obj);
+
+
+            obj = new Dataset("dsInsertLoan", this);
+            obj._setContents("");
+            this.addChild(obj.name, obj);
+
+
+            obj = new Dataset("dsInsertMem", this);
+            obj._setContents("<ColumnInfo><Column id=\"name\" type=\"STRING\" size=\"256\"/><Column id=\"email\" type=\"STRING\" size=\"256\"/><Column id=\"phone\" type=\"STRING\" size=\"256\"/><Column id=\"birthDate\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            this.addChild(obj.name, obj);
             
             // UI Components Initialize
-            obj = new Combo("cmdSearch","295","53","174","47",null,null,null,null,null,null,this);
+            obj = new Combo("cmbSearch","295","53","174","47",null,null,null,null,null,null,this);
             obj.set_taborder("0");
             obj.set_innerdataset("dsSearchCmb");
             obj.set_codecolumn("code");
@@ -49,7 +59,7 @@
             obj.set_text("검색");
             this.addChild(obj.name, obj);
 
-            obj = new Button("btnInStock","755","533","115","43",null,null,null,null,null,null,this);
+            obj = new Button("btnLoan","755","533","115","43",null,null,null,null,null,null,this);
             obj.set_taborder("3");
             obj.set_text("대출");
             this.addChild(obj.name, obj);
@@ -64,15 +74,15 @@
             obj.set_text("회원가입");
             this.addChild(obj.name, obj);
 
-            obj = new Button("btnLoan","1034","182","141","36",null,null,null,null,null,null,this);
+            obj = new Button("btnInstock","1034","182","141","36",null,null,null,null,null,null,this);
             obj.set_taborder("6");
             obj.set_text("입고");
             this.addChild(obj.name, obj);
 
-            obj = new Grid("grdLoans","288","134","712","386",null,null,null,null,null,null,this);
+            obj = new Grid("grdLoanList","295","123","707","394",null,null,null,null,null,null,this);
             obj.set_taborder("7");
-            obj.set_binddataset("dsLoan");
-            obj._setContents("<Formats><Format id=\"default\"><Columns><Column size=\"48\"/><Column size=\"80\"/><Column size=\"80\"/><Column size=\"80\"/><Column size=\"80\"/><Column size=\"80\"/><Column size=\"80\"/><Column size=\"80\"/></Columns><Rows><Row size=\"24\" band=\"head\"/><Row size=\"24\"/></Rows><Band id=\"head\"><Cell/><Cell col=\"1\" text=\"대출번호\"/><Cell col=\"2\" text=\"회원번호\"/><Cell col=\"3\" text=\"이름\"/><Cell col=\"4\" text=\"제목\"/><Cell col=\"5\" text=\"대출일자\"/><Cell col=\"6\" text=\"반납일자\"/><Cell col=\"7\" text=\"상태\"/></Band><Band id=\"body\"><Cell edittype=\"checkbox\" displaytype=\"checkboxcontrol\"/><Cell col=\"1\" text=\"bind:loanId\"/><Cell col=\"2\" text=\"bind:memberId\"/><Cell col=\"3\" text=\"bind:name\"/><Cell col=\"4\" text=\"bind:title\"/><Cell col=\"5\" text=\"bind:loanDate\"/><Cell col=\"6\" text=\"bind:returnDate\"/><Cell col=\"7\" text=\"bind:status\"/></Band></Format></Formats>");
+            obj.set_binddataset("dsLoanList");
+            obj._setContents("<Formats><Format id=\"default\"><Columns><Column size=\"48\"/><Column size=\"59\"/><Column size=\"63\"/><Column size=\"80\"/><Column size=\"149\"/><Column size=\"108\"/><Column size=\"112\"/><Column size=\"82\"/></Columns><Rows><Row size=\"24\" band=\"head\"/><Row size=\"24\"/></Rows><Band id=\"head\"><Cell/><Cell col=\"1\" text=\"대출번호\"/><Cell col=\"2\" text=\"회원번호\"/><Cell col=\"3\" text=\"이름\"/><Cell col=\"4\" text=\"제목\"/><Cell col=\"5\" text=\"대출일자\"/><Cell col=\"6\" text=\"반납일자\"/><Cell col=\"7\" text=\"상태\"/></Band><Band id=\"body\"><Cell edittype=\"checkbox\" displaytype=\"checkboxcontrol\" checkboxfalsevalue=\"0\" checkboxtruevalue=\"1\" text=\"bind:CHK\"/><Cell col=\"1\" text=\"bind:loan_id\"/><Cell col=\"2\" text=\"bind:member_id\"/><Cell col=\"3\" text=\"bind:name\"/><Cell col=\"4\" text=\"bind:title\"/><Cell col=\"5\" text=\"bind:loan_date\"/><Cell col=\"6\" text=\"bind:return_date\"/><Cell col=\"7\" text=\"bind:status\"/></Band></Format></Formats>");
             this.addChild(obj.name, obj);
             // Layout Functions
             //-- Default Layout : this
@@ -80,7 +90,7 @@
             this.addLayout(obj.name, obj);
             
             // BindItem Information
-            obj = new BindItem("item0","cmdSearch","value","dsSearch","searchCmb");
+            obj = new BindItem("item0","cmbSearch","value","dsSearch","searchCmb");
             this.addChild(obj.name, obj);
             obj.bind();
 
@@ -98,12 +108,104 @@
         };
         
         // User Script
+        this.registerScript("Form_Work.xfdl", function() {
 
+        this.Form_Work_onload = function(obj,e)
+        {
+        	this.dsSearch.clearData();
+        	this.dsSearch.addRow();
+
+        	this.dsSearch.setColumn(0, "searchCmb", "ALL");
+        	this.dsSearch.setColumn(0, "searchVal", "");
+        	this.btnSearch_onclick();
+        };
+
+        // 대출화면으로 이동
+        this.btnLoan_onclick = function(obj,e)
+        {
+        	var objParam  = {"loan_id":""}
+        	this.fnShowPopup(objParam);
+        };
+
+        this.btnSearch_onclick = function(obj,e)
+        {
+        	var searchCmb = this.cmbSearch.value;
+        	var searchVal = this.edtSearch.value;
+        	if(searchCmb == undefined){
+        		searchCmb = "";
+        	}
+        	if(searchVal == undefined){
+        		searchVal = "";
+        	}
+        	this.fnSearch();
+        };
+
+
+        this.fnSearch = function()
+        {
+        		this.transaction("searchLoans"
+        						,"DataSrv::selectLoans.do"
+        						,"dsSearch=dsSearch"
+        						,"dsLoanList=dsLoanList"
+        						, ""
+        						,"fnCallBack"
+        						,true)
+        }
+
+
+
+        this.fnInsertMember = function()
+        {
+        		this.transaction("insertMember"
+        						,"DataSrv::insertMember.do"
+        						,"dsMember=dsMember"
+        						,""
+        						,""
+        						,"fnCallBack"
+        						,true
+        						)
+        }
+
+        this.fnUpdateStatus = function()
+        {
+        		this.transaction("updateStatus"
+        						,"DataSrv::updateStatus.do"
+        						,"dsLoan=dsLoan"
+        						,""
+        						,""
+        						,"fnCallBack"
+        						,true)
+        }
+
+        this.fnCallBack = function(strSvcID, nErrorCode, strErrorMag)
+        {
+        	alert("rowcount: " + this.dsLoanList.getRowCount());
+        	if(nErrorCode < 0){  // 에러일 때
+                alert("오류: " + strErrorMag);
+                return;
+            }
+        	if(strSvcID="insertLoan"){
+        		alert(strErrorMag);
+        		return;
+        	}
+        }
+
+        this.fnShowPopup = function(objParam)
+        {
+        	popup = new nexacro.ChildFrame;
+        	popup.init("popup", 0, 0, 800, 700, null, null, "FrameBase::Form_Loan.xfdl");
+        	popup.showModal(this.getOwnerFrame(), objParam, this, "fnPopupCallback", true);
+        }
+
+
+        });
         
         // Regist UI Components Event
         this.on_initEvent = function()
         {
-
+            this.addEventHandler("onload",this.Form_Work_onload,this);
+            this.btnSearch.addEventHandler("onclick",this.btnSearch_onclick,this);
+            this.btnLoan.addEventHandler("onclick",this.btnLoan_onclick,this);
         };
         this.loadIncludeScript("Form_Work.xfdl");
         this.loadPreloadList();
