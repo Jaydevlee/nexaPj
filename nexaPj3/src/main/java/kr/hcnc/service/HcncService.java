@@ -33,6 +33,11 @@ public class HcncService {
 		return list;
 	}
 	
+	public List<Map<String,Object>> selectMembers(){
+		List<Map<String, Object>> list = hcncMapper.selectMembers();
+		return list;
+	}
+	
 	public int insertLoan(Map<String, Object> param) {
 		int result = hcncMapper.insertLoan(param);
 		return result;

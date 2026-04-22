@@ -2,14 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.hcnc.mapper.HcncMapper">
 	<select id="selectLoans" parameterType="Map" resultType="Map">
-		SELECT T1.loan_id
-			,T2.member_id
-			,T2.name
-			,T3.title
-			,T1.loan_date
-			,T1.due_date
-			,T1.return_date
-			,T1.status
+		SELECT T1.LOAN_ID
+			,T2.MEMBER_ID
+			,T2.NAME
+			,T3.TITLE
+			,T1.LOAN_DATE
+			,T1.DUE_DATE
+			,T1.RETURN_DATE
+			,T1.STATUS
+			,T1.BOOK_ID
 			,0 AS CHK
 		FROM LIBRARYDB.LOANS T1
 		INNER JOIN LIBRARYDB.MEMBERS T2
@@ -17,6 +18,9 @@
 		INNER JOIN LIBRARYDB.BOOKS T3
 			ON T1.BOOK_ID = T3.BOOK_ID
 		WHERE 1=1
+		<if test = 'LOAN_ID != null and LOAN_ID != ""'>
+			AND T1.LOAN_ID = #{LOAN_ID}
+		</if>
 		<if test = 'searchVal != null and searchVal != ""'>
 			<choose>
 				<when test = 'searchCmb == "ALL"'>
@@ -49,6 +53,16 @@
 		SELECT BOOK_ID
 			  , TITLE
 		FROM LIBRARYDB.BOOKS
+	</select>
+	
+	<select id="selectMembers" parameterType="Map" resultType="Map">
+		SELECT MEMBER_ID
+			  ,NAME
+			  ,EMAIL
+			  ,PHONE
+			  ,BIRTHDATE
+			  ,GRADE
+		FROM LIBRARYDB.MEMBERS
 	</select>
 	
 	<insert id = 'insertMem' parameterType='Map'>

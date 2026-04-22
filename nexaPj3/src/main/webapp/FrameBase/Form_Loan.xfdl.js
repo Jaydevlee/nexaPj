@@ -28,7 +28,7 @@
 
 
             obj = new Dataset("dsLoan", this);
-            obj._setContents("<ColumnInfo><Column id=\"MEMBER_ID\" type=\"STRING\" size=\"256\"/><Column id=\"BOOK_ID\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            obj._setContents("<ColumnInfo><Column id=\"MEMBER_ID\" type=\"STRING\" size=\"256\"/><Column id=\"BOOK_ID\" type=\"STRING\" size=\"256\"/><Column id=\"LOAN_ID\" type=\"STRING\" size=\"256\"/><Column id=\"NAME\" type=\"STRING\" size=\"256\"/><Column id=\"TITLE\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
             this.addChild(obj.name, obj);
             
             // UI Components Initialize
@@ -99,9 +99,19 @@
 
         this.Form_Loan_onload = function(obj,e)
         {
-        	this.fnListBoxName();
-        	this.fnListBoxBook();
-        	this.dsLoan.addRow();
+        	if(this.parent.LOAN_ID =="")
+        	{
+        		this.fnListBoxName();
+        		this.fnListBoxBook();
+        		this.dsLoan.clearData();
+        		this.dsLoan.addRow();
+        	} else
+        	{
+        		console.log("FormLoan::" + this.parent.LOAN_ID);
+        		this.edtName.readonly = true;
+        		this.edtBook.readonly = true;
+        		this.fnSelectLoan();
+        	}
         };
 
         this.btnLoan_onclick = function(obj,e)
@@ -150,14 +160,26 @@
 
         this.fnInsertLoan = function()
         {
-        		this.transaction("insertLoan"
-        						,"DataSrv::insertLoan.do"
-        						,"dsLoan=dsLoan"
-        						,""
-        						,""
-        						,"fnCallback"
-        						,true
-        						)
+        	this.transaction("insertLoan"
+        					,"DataSrv::insertLoan.do"
+        					,"dsLoan=dsLoan"
+        					,""
+        					,""
+        					,"fnCallback"
+        					,true
+        					)
+        }
+
+        this.fnSelectLoan = function ()
+        {
+        	this.transaction("selectLoan"
+        					,"DataSrv::selectLoans.do"
+        					,""
+        					,"dsLoan=dsLoanList"
+        					,"LOAN_ID="+ this.parent.LOAN_ID
+        					,"fnCallback"
+        					,true
+        				)
         }
 
         this.fnCallback = function(strSvcID, nErrorCode, strErrorMag)
@@ -181,6 +203,12 @@
         	}
         	if(strSvcID == "insertLoan"){
         		alert(strErrorMag);
+        	}
+        	if(strSvcID == "selectLoan")
+        	{
+        		alert(strErrorMag);
+        		this.edtName.value = this.dsLoan.getColumn(0, "NAME");
+        		this.edtBook.value = this.dsLoan.getColumn(0, "TITLE");
         	}
         }
 

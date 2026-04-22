@@ -97,9 +97,23 @@
         // User Script
         this.registerScript("Form_SignUp.xfdl", function() {
 
+        this.Form_SignUp_onload = function(obj,e)
+        {
+        		this.dsMember.clearData();
+        		this.dsMember.addRow();
+        };
+
+
         this.btnSignup_onclick = function(obj,e)
         {
-        		this.fnSignUp();
+        		var name = this.edtName.value.trim();
+        		var email = this.edtEmail.value.trim();
+        		var birthDate = this.edtBirth.value.trim();
+        		var phone = this.edtPhone.value.trim();
+
+        		var regResult = this.fnRegMember(name, email, birthDate);
+        		if(regResult) this.fnSignUp();
+        		else alert("입력내용을 확인해주세요");
         };
 
 
@@ -122,11 +136,60 @@
         	if(strSvcID == "insertMember") alert(strErrorMag);
         }
 
+
+        this.fnRegMember = function(name, email, birthDate, phone)
+        {
+        		var nameReg = /^[가-힣]{2,5}$/;
+        		var emailReg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i
+        		var birthReg = /^(19|20)\d{2}-(0[1-9]|1[0-2])-([0-2][1-9]|3[01])$/;
+        		var phoneReg = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+
+
+        		if(name == "" || name == undefined) {
+        			alert("이름을 입력해주세요");
+        			this.edtName.setFocus(true);
+        			return;
+        		} else if(!nameReg.test(name)) {
+        			alert("이름은 한글만 입력가능합니다");
+        			this.edtName.setFocus(true);
+        			return;
+        		}
+
+        		if(email == "" || email == undefined) {
+        			alert("email을 입력해주세요");
+        			this.edtEmail.setFocus(true);
+        			return;
+        		} else if(!emailReg.test(email)) {
+        			alert("email양식이 올바르지 않습니다.");
+        			this.edtEmail.setFocus(true);
+        			return;
+        		}
+
+        		if(birthDate == "" || birthDate == undefined) {
+        			alert("생년월일을 입력해주세요");
+        			this.edtBirth.setFocus(true);
+        			return;
+        		} else if (!birthReg.test(birthDate)) {
+        			alert("생년월일은 (yyyy-mm-dd)로 입력해주세요.");
+        			this.edtBirth.setFocus(true);
+        			return;
+        		}
+         		if(phone != "" || phone != undefined) {
+         			if(phoneReg.test(phone)){
+        				alert("전화번호는 000-0000-0000으로 입력해주세요");
+        				this.edtphone.setFocus(true);
+        				return;
+        			}
+        		}
+        		return true;
+        }
+
         });
         
         // Regist UI Components Event
         this.on_initEvent = function()
         {
+            this.addEventHandler("onload",this.Form_SignUp_onload,this);
             this.btnSignup.addEventHandler("onclick",this.btnSignup_onclick,this);
         };
         this.loadIncludeScript("Form_SignUp.xfdl");

@@ -11,7 +11,7 @@ public interface HcncMapper {
 	List<Map<String, Object>> selectLoans(HashMap<String, Object> param);
 	List<Map<String, Object>> selectBook();
 	List<Map<String, Object>> selectName();
-
+	List<Map<String, Object>> selectMembers();
 	
 	int insertMem(Map<String, Object> param);
 	int insertLoan(Map<String, Object> param);

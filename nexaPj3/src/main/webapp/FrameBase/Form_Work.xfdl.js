@@ -18,7 +18,7 @@
             
             // Object(Dataset, ExcelExportObject) Initialize
             obj = new Dataset("dsLoanList", this);
-            obj._setContents("<ColumnInfo><Column id=\"loan_id\" type=\"STRING\" size=\"256\"/><Column id=\"member_id\" type=\"STRING\" size=\"256\"/><Column id=\"name\" type=\"STRING\" size=\"256\"/><Column id=\"title\" type=\"STRING\" size=\"256\"/><Column id=\"loan_date\" type=\"STRING\" size=\"256\"/><Column id=\"return_date\" type=\"STRING\" size=\"256\"/><Column id=\"status\" type=\"STRING\" size=\"256\"/><Column id=\"CHK\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
+            obj._setContents("<ColumnInfo><Column id=\"LOAN_ID\" type=\"STRING\" size=\"256\"/><Column id=\"MEMBER_ID\" type=\"STRING\" size=\"256\"/><Column id=\"NAME\" type=\"STRING\" size=\"256\"/><Column id=\"TITLE\" type=\"STRING\" size=\"256\"/><Column id=\"LOAN_DATE\" type=\"STRING\" size=\"256\"/><Column id=\"RETURN_DATE\" type=\"STRING\" size=\"256\"/><Column id=\"STATUS\" type=\"STRING\" size=\"256\"/><Column id=\"CHK\" type=\"STRING\" size=\"256\"/><Column id=\"BOOK_ID\" type=\"STRING\" size=\"256\"/></ColumnInfo>");
             this.addChild(obj.name, obj);
 
 
@@ -82,7 +82,12 @@
             obj = new Grid("grdLoanList","295","123","707","394",null,null,null,null,null,null,this);
             obj.set_taborder("7");
             obj.set_binddataset("dsLoanList");
-            obj._setContents("<Formats><Format id=\"default\"><Columns><Column size=\"48\"/><Column size=\"59\"/><Column size=\"63\"/><Column size=\"80\"/><Column size=\"149\"/><Column size=\"108\"/><Column size=\"112\"/><Column size=\"82\"/></Columns><Rows><Row size=\"24\" band=\"head\"/><Row size=\"24\"/></Rows><Band id=\"head\"><Cell/><Cell col=\"1\" text=\"대출번호\"/><Cell col=\"2\" text=\"회원번호\"/><Cell col=\"3\" text=\"이름\"/><Cell col=\"4\" text=\"제목\"/><Cell col=\"5\" text=\"대출일자\"/><Cell col=\"6\" text=\"반납일자\"/><Cell col=\"7\" text=\"상태\"/></Band><Band id=\"body\"><Cell edittype=\"checkbox\" displaytype=\"checkboxcontrol\" checkboxfalsevalue=\"0\" checkboxtruevalue=\"1\" text=\"bind:CHK\"/><Cell col=\"1\" text=\"bind:loan_id\"/><Cell col=\"2\" text=\"bind:member_id\"/><Cell col=\"3\" text=\"bind:name\"/><Cell col=\"4\" text=\"bind:title\"/><Cell col=\"5\" text=\"bind:loan_date\"/><Cell col=\"6\" text=\"bind:return_date\"/><Cell col=\"7\" text=\"bind:status\"/></Band></Format></Formats>");
+            obj._setContents("<Formats><Format id=\"default\"><Columns><Column size=\"48\"/><Column size=\"59\"/><Column size=\"63\"/><Column size=\"80\"/><Column size=\"149\"/><Column size=\"108\"/><Column size=\"112\"/><Column size=\"82\"/></Columns><Rows><Row size=\"24\" band=\"head\"/><Row size=\"24\"/></Rows><Band id=\"head\"><Cell/><Cell col=\"1\" text=\"대출번호\"/><Cell col=\"2\" text=\"회원번호\"/><Cell col=\"3\" text=\"이름\"/><Cell col=\"4\" text=\"제목\"/><Cell col=\"5\" text=\"대출일자\"/><Cell col=\"6\" text=\"반납일자\"/><Cell col=\"7\" text=\"상태\"/></Band><Band id=\"body\"><Cell edittype=\"checkbox\" displaytype=\"checkboxcontrol\" checkboxfalsevalue=\"0\" checkboxtruevalue=\"1\" text=\"bind:CHK\"/><Cell col=\"1\" text=\"bind:LOAN_ID\"/><Cell col=\"2\" text=\"bind:MEMBER_ID\"/><Cell col=\"3\" text=\"bind:NAME\"/><Cell col=\"4\" text=\"bind:TITLE\"/><Cell col=\"5\" text=\"bind:LOAN_DATE\"/><Cell col=\"6\" text=\"bind:RETURN_DATE\"/><Cell col=\"7\" text=\"bind:STATUS\"/></Band></Format></Formats>");
+            this.addChild(obj.name, obj);
+
+            obj = new Button("btnListMem","1035","242","141","39",null,null,null,null,null,null,this);
+            obj.set_taborder("8");
+            obj.set_text("회원목록");
             this.addChild(obj.name, obj);
             // Layout Functions
             //-- Default Layout : this
@@ -123,7 +128,20 @@
         // 대출화면으로 이동
         this.btnLoan_onclick = function(obj,e)
         {
-        	var objParam  = {"loan_id":""}
+        	var objParam  = {"LOAN_ID":""}
+        	this.fnShowPopup(objParam);
+        };
+
+        this.btnSignup_onclick = function(obj,e)
+        {
+        	var objParam = {"member_id":""};
+        	this.fnShowSignup(objParam);
+        };
+
+        // 대출 셀 더블클릭
+        this.grdLoanList_oncelldblclick = function(obj,e)
+        {
+        	var objParam = {"LOAN_ID": this.dsLoanList.getColumn(this.dsLoanList.rowposition, "LOAN_ID")};
         	this.fnShowPopup(objParam);
         };
 
@@ -140,6 +158,10 @@
         	this.fnSearch();
         };
 
+        this.btnListMem_onclick = function(obj,e)
+        {
+        	this.go("FrameBase::Form_ListMem.xfdl");
+        };
 
         this.fnSearch = function()
         {
@@ -197,6 +219,18 @@
         	popup.showModal(this.getOwnerFrame(), objParam, this, "fnPopupCallback", true);
         }
 
+        this.fnShowSignup = function(objParam)
+        {
+        	popup = new nexacro.ChildFrame;
+        	popup.init("signUpPopup", 0, 0, 800, 700, null, null, "FrameBase::Form_SignUp.xfdl");
+        	popup.showModal(this.getOwnerFrame(), objParam, this, "fnPopupCallback", true);
+        }
+
+
+
+
+
+
 
         });
         
@@ -206,6 +240,9 @@
             this.addEventHandler("onload",this.Form_Work_onload,this);
             this.btnSearch.addEventHandler("onclick",this.btnSearch_onclick,this);
             this.btnLoan.addEventHandler("onclick",this.btnLoan_onclick,this);
+            this.btnSignup.addEventHandler("onclick",this.btnSignup_onclick,this);
+            this.grdLoanList.addEventHandler("oncelldblclick",this.grdLoanList_oncelldblclick,this);
+            this.btnListMem.addEventHandler("onclick",this.btnListMem_onclick,this);
         };
         this.loadIncludeScript("Form_Work.xfdl");
         this.loadPreloadList();
