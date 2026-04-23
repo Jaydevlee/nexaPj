@@ -89,9 +89,9 @@ public class HcncController {
 	}
 	
 	@RequestMapping("/updateStatus.do")
-	public NexacroResult updateStatus(@ParamDataSet(name="dsStatus") Map<String, Object> dsStatus) {
+	public NexacroResult updateStatus(@ParamDataSet(name="dsLoan") Map<String, Object> dsLoan) {
 		NexacroResult result = new NexacroResult();
-		int updateResult = hcncService.updateStauts(dsStatus);
+		int updateResult = hcncService.updateStauts(dsLoan);
 		if(updateResult > 0) {
 			result.addVariable("ErrorCode", 0);
 			result.addVariable("ErrorMsg", "반납되었습니다.");

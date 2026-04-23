@@ -132,6 +132,10 @@
         		this.fnInsertLoan();
         };
 
+        this.btnReturn_onclick = function(obj,e)
+        {
+        	this.fnUpdateStatus();
+        };
 
 
         this.fnListBoxName = function()
@@ -182,6 +186,18 @@
         				)
         }
 
+        this.fnUpdateStatus = function ()
+        {
+        	this.transaction("updateStatus"
+        					,"DataSrv::updateStatus.do"
+        					,"dsLoan=dsLoan"
+        					,""
+        					,""
+        					,"fnCallback"
+        					,true
+        					)
+        }
+
         this.fnCallback = function(strSvcID, nErrorCode, strErrorMag)
         {
         	if(nErrorCode < 0) {
@@ -209,6 +225,11 @@
         		alert(strErrorMag);
         		this.edtName.value = this.dsLoan.getColumn(0, "NAME");
         		this.edtBook.value = this.dsLoan.getColumn(0, "TITLE");
+        	}
+        	if(strSvcID == "updateStatus")
+        	{
+        		console.log("반납 콜백");
+        		alert(strErrorMag);
         	}
         }
 
@@ -320,6 +341,7 @@
         };
 
 
+
         });
         
         // Regist UI Components Event
@@ -327,6 +349,7 @@
         {
             this.addEventHandler("onload",this.Form_Loan_onload,this);
             this.btnLoan.addEventHandler("onclick",this.btnLoan_onclick,this);
+            this.btnReturn.addEventHandler("onclick",this.btnReturn_onclick,this);
             this.edtName.addEventHandler("oninput",this.edtName_oninput,this);
             this.edtName.addEventHandler("onkeydown",this.edtName_onkeydown,this);
             this.edtBook.addEventHandler("oninput",this.edtBook_oninput,this);
