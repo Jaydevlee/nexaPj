@@ -40,6 +40,7 @@
 				</when>
 			</choose>
 		</if>
+		ORDER BY T1.LOAN_ID DESC
 	</select>
 	
 	<select id="selectName" parameterType="Map" resultType="Map">
@@ -62,7 +63,21 @@
 			  ,PHONE
 			  ,BIRTHDATE
 			  ,GRADE
+			  ,0 AS CHK
 		FROM LIBRARYDB.MEMBERS
+	</select>
+	
+	<select id="selectBooks" parameterType="Map" resultType="Map">
+		SELECT BOOK_ID
+			  ,TITLE
+			  ,AUTHOR
+			  ,PUBLISHER
+			  ,PUB_YEAR
+			  ,GENRE
+			  ,PRICE
+			  ,STOCK
+			  ,0 AS CHK
+		FROM BOOKS
 	</select>
 	
 	<insert id = 'insertMem' parameterType='Map'>
@@ -75,11 +90,30 @@
 		VALUES (#{MEMBER_ID}, #{BOOK_ID}, current_timestamp(), DATE_ADD(current_timestamp(), interval 14 DAY))
 	</insert>
 	
+	
+	<insert id = 'insertBook' parameterType='Map'>
+		INSERT INTO BOOKS (TITLE, AUTHOR, PUBLISHER, PUB_YEAR, GENRE, PRICE, STOCK)
+		VALUES (#{TITLE}, #{AUTHOR}, #{PUBLISHER}, #{PUB_YEAR}, #{GENRE}, #{PRICE} ,#{STOCK})
+	</insert>
+	
 	<update id = 'updateStatus' parameterType='Map'>
 		UPDATE LIBRARYDB.LOANS
 			SET STATUS='반납완료'
 			, RETURN_DATE= CURRENT_TIMESTAMP()
 		WHERE MEMBER_ID=#{MEMBER_ID} 
 			AND LOAN_ID=#{LOAN_ID}
+	</update>
+	
+	<update id = 'updateStock' parameterType='Map'>
+		UPDATE LIBRARYDB.BOOKS
+			SET STOCK = STOCK-1
+		WHERE BOOK_ID=#{BOOK_ID}
+		AND STOCK > 0
+	</update>
+	
+	<update id = 'updateReturnStock' parameterType='Map'>
+		UPDATE LIBRARYDB.BOOKS
+			SET STOCK = STOCK + 1
+		WHERE BOOK_ID=#{BOOK_ID}
 	</update>
 </mapper>

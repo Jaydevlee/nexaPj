@@ -50,7 +50,7 @@
             obj.set_text("Combo00");
             this.addChild(obj.name, obj);
 
-            obj = new Edit("edtSearch","495","50","505","52",null,null,null,null,null,null,this);
+            obj = new Edit("edtSearch","495","50","529","52",null,null,null,null,null,null,this);
             obj.set_taborder("1");
             this.addChild(obj.name, obj);
 
@@ -69,24 +69,19 @@
             obj.set_text("반납");
             this.addChild(obj.name, obj);
 
-            obj = new Button("btnSignup","1035","127","141","36",null,null,null,null,null,null,this);
+            obj = new Button("btnListBook","1034","182","141","36",null,null,null,null,null,null,this);
             obj.set_taborder("5");
-            obj.set_text("회원가입");
+            obj.set_text("도서목록");
             this.addChild(obj.name, obj);
 
-            obj = new Button("btnInstock","1034","182","141","36",null,null,null,null,null,null,this);
+            obj = new Grid("grdLoanList","295","123","729","394",null,null,null,null,null,null,this);
             obj.set_taborder("6");
-            obj.set_text("입고");
-            this.addChild(obj.name, obj);
-
-            obj = new Grid("grdLoanList","295","123","707","394",null,null,null,null,null,null,this);
-            obj.set_taborder("7");
             obj.set_binddataset("dsLoanList");
-            obj._setContents("<Formats><Format id=\"default\"><Columns><Column size=\"48\"/><Column size=\"59\"/><Column size=\"63\"/><Column size=\"80\"/><Column size=\"149\"/><Column size=\"108\"/><Column size=\"112\"/><Column size=\"82\"/></Columns><Rows><Row size=\"24\" band=\"head\"/><Row size=\"24\"/></Rows><Band id=\"head\"><Cell/><Cell col=\"1\" text=\"대출번호\"/><Cell col=\"2\" text=\"회원번호\"/><Cell col=\"3\" text=\"이름\"/><Cell col=\"4\" text=\"제목\"/><Cell col=\"5\" text=\"대출일자\"/><Cell col=\"6\" text=\"반납일자\"/><Cell col=\"7\" text=\"상태\"/></Band><Band id=\"body\"><Cell edittype=\"checkbox\" displaytype=\"checkboxcontrol\" checkboxfalsevalue=\"0\" checkboxtruevalue=\"1\" text=\"bind:CHK\"/><Cell col=\"1\" text=\"bind:LOAN_ID\"/><Cell col=\"2\" text=\"bind:MEMBER_ID\"/><Cell col=\"3\" text=\"bind:NAME\"/><Cell col=\"4\" text=\"bind:TITLE\"/><Cell col=\"5\" text=\"bind:LOAN_DATE\"/><Cell col=\"6\" text=\"bind:RETURN_DATE\"/><Cell col=\"7\" text=\"bind:STATUS\"/></Band></Format></Formats>");
+            obj._setContents("<Formats><Format id=\"default\"><Columns><Column size=\"48\"/><Column size=\"59\"/><Column size=\"63\"/><Column size=\"80\"/><Column size=\"149\"/><Column size=\"121\"/><Column size=\"125\"/><Column size=\"73\"/></Columns><Rows><Row size=\"24\" band=\"head\"/><Row size=\"24\"/></Rows><Band id=\"head\"><Cell/><Cell col=\"1\" text=\"대출번호\"/><Cell col=\"2\" text=\"회원번호\"/><Cell col=\"3\" text=\"이름\"/><Cell col=\"4\" text=\"제목\"/><Cell col=\"5\" text=\"대출일자\"/><Cell col=\"6\" text=\"반납일자\"/><Cell col=\"7\" text=\"상태\"/></Band><Band id=\"body\"><Cell edittype=\"checkbox\" displaytype=\"checkboxcontrol\" checkboxfalsevalue=\"0\" checkboxtruevalue=\"1\" text=\"bind:CHK\"/><Cell col=\"1\" text=\"bind:LOAN_ID\"/><Cell col=\"2\" text=\"bind:MEMBER_ID\"/><Cell col=\"3\" text=\"bind:NAME\"/><Cell col=\"4\" text=\"bind:TITLE\"/><Cell col=\"5\" text=\"bind:LOAN_DATE\"/><Cell col=\"6\" text=\"bind:RETURN_DATE\"/><Cell col=\"7\" text=\"bind:STATUS\"/></Band></Format></Formats>");
             this.addChild(obj.name, obj);
 
-            obj = new Button("btnListMem","1035","242","141","39",null,null,null,null,null,null,this);
-            obj.set_taborder("8");
+            obj = new Button("btnListMem","1034","123","141","39",null,null,null,null,null,null,this);
+            obj.set_taborder("7");
             obj.set_text("회원목록");
             this.addChild(obj.name, obj);
             // Layout Functions
@@ -132,12 +127,6 @@
         	this.fnShowPopup(objParam);
         };
 
-        this.btnSignup_onclick = function(obj,e)
-        {
-        	var objParam = {"member_id":""};
-        	this.fnShowSignup(objParam);
-        };
-
         // 대출 셀 더블클릭
         this.grdLoanList_oncelldblclick = function(obj,e)
         {
@@ -163,6 +152,12 @@
         	this.go("FrameBase::Form_ListMem.xfdl");
         };
 
+        this.btnListBook_onclick = function(obj,e)
+        {
+        	this.go("FrameBase::Form_Book.xfdl");
+        };
+
+
         this.fnSearch = function()
         {
         		this.transaction("searchLoans"
@@ -172,20 +167,6 @@
         						, ""
         						,"fnCallBack"
         						,true)
-        }
-
-
-
-        this.fnInsertMember = function()
-        {
-        		this.transaction("insertMember"
-        						,"DataSrv::insertMember.do"
-        						,"dsMember=dsMember"
-        						,""
-        						,""
-        						,"fnCallBack"
-        						,true
-        						)
         }
 
         this.fnUpdateStatus = function()
@@ -232,6 +213,8 @@
 
 
 
+
+
         });
         
         // Regist UI Components Event
@@ -240,7 +223,7 @@
             this.addEventHandler("onload",this.Form_Work_onload,this);
             this.btnSearch.addEventHandler("onclick",this.btnSearch_onclick,this);
             this.btnLoan.addEventHandler("onclick",this.btnLoan_onclick,this);
-            this.btnSignup.addEventHandler("onclick",this.btnSignup_onclick,this);
+            this.btnListBook.addEventHandler("onclick",this.btnListBook_onclick,this);
             this.grdLoanList.addEventHandler("oncelldblclick",this.grdLoanList_oncelldblclick,this);
             this.btnListMem.addEventHandler("onclick",this.btnListMem_onclick,this);
         };

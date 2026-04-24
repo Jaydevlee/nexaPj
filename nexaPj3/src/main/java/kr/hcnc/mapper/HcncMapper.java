@@ -12,10 +12,14 @@ public interface HcncMapper {
 	List<Map<String, Object>> selectBook();
 	List<Map<String, Object>> selectName();
 	List<Map<String, Object>> selectMembers();
+	List<Map<String, Object>> selectBooks();
 	
 	int insertMem(Map<String, Object> param);
 	int insertLoan(Map<String, Object> param);
+	int insertBook(Map<String, Object> param);
 	
 	int updateLoans(Map<String, Object> param);
+	int updateStock(Map<String, Object> param);
 	int updateStatus(Map<String, Object> param);
+	int updateReturnStock(Map<String, Object> param);
 }

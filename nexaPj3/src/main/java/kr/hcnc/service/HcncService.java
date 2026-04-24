@@ -38,6 +38,11 @@ public class HcncService {
 		return list;
 	}
 	
+	public List<Map<String,Object>> selectBooks(){
+		List<Map<String, Object>> list = hcncMapper.selectBooks();
+		return list;
+	}
+	
 	public int insertLoan(Map<String, Object> param) {
 		int result = hcncMapper.insertLoan(param);
 		return result;
@@ -48,8 +53,23 @@ public class HcncService {
 		return result;
 	}
 	
+	public int insertBook(Map<String, Object> param) {
+		int result = hcncMapper.insertBook(param);
+		return result;
+	}
+	
+	public int updateStock(Map<String, Object> param) {
+		int result = hcncMapper.updateStock(param);
+		return result;
+	}
+	
 	public int updateStauts(Map<String, Object> param) {
 		int result = hcncMapper.updateStatus(param);
+		return result;
+	}
+	
+	public int updateReturnStock(Map<String, Object> param) {
+		int result = hcncMapper.updateReturnStock(param);
 		return result;
 	}
 }	
