@@ -8,14 +8,18 @@ import egovframework.rte.psl.dataaccess.mapper.Mapper;
 
 @Mapper("hcncMapper")
 public interface HcncMapper {
-	public String selectTest();
-	public int insertTestData(HashMap<String, Object> param);
-	List<Map<String, Object>> selectBoard(HashMap<String, Object> param);
-	List<Map<String, Object>> selectBoardList(HashMap<String, Object> param);
-	List<Map<String, Object>> selectBoardDetail(HashMap<String, Object> param);
+	List<Map<String, Object>> selectLoans(HashMap<String, Object> param);
+	List<Map<String, Object>> selectBook();
+	List<Map<String, Object>> selectName();
+	List<Map<String, Object>> selectMembers();
+	List<Map<String, Object>> selectBooks();
 	
+	int insertMem(Map<String, Object> param);
+	int insertLoan(Map<String, Object> param);
+	int insertBook(Map<String, Object> param);
 	
-	int insertBoard(HashMap<String, Object> param);
-	int updateBoard(HashMap<String, Object> param);
-	int deleteBoard(int boardNo);
+	int updateLoans(Map<String, Object> param);
+	int updateStock(Map<String, Object> param);
+	int updateStatus(Map<String, Object> param);
+	int updateReturnStock(Map<String, Object> param);
 }

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.hcnc.mapper.HcncMapper">
+	<select id="selectLoans" parameterType="Map" resultType="Map">
+		SELECT T1.LOAN_ID
+			,T2.MEMBER_ID
+			,T2.NAME
+			,T3.TITLE
+			,T1.LOAN_DATE
+			,T1.DUE_DATE
+			,T1.RETURN_DATE
+			,T1.STATUS
+			,T1.BOOK_ID
+			,0 AS CHK
+		FROM LIBRARYDB.LOANS T1
+		INNER JOIN LIBRARYDB.MEMBERS T2
+			ON T1.MEMBER_ID = T2.MEMBER_ID
+		INNER JOIN LIBRARYDB.BOOKS T3
+			ON T1.BOOK_ID = T3.BOOK_ID
+		WHERE 1=1
+		<if test = 'LOAN_ID != null and LOAN_ID != ""'>
+			AND T1.LOAN_ID = #{LOAN_ID}
+		</if>
+		<if test = 'searchVal != null and searchVal != ""'>
+			<choose>
+				<when test = 'searchCmb == "ALL"'>
+					AND (NAME LIKE CONCAT('%', #{searchVal}, '%')  
+						OR TITLE LIKE CONCAT('%', #{searchVal}, '%')
+						OR STATUS LIKE CONCAT('%', #{searchVal}, '%')
+						) 
+				</when>
+				<when test = 'searchCmb == "NAME"'>
+						AND NAME LIKE CONCAT('%', #{searchVal}, '%')
+				</when>
+				<when test = 'searchCmb == "TITLE"'>
+						AND TITLE LIKE CONCAT('%', #{searchVal}, '%')
+				</when>
+				<when test = 'searchCmb == "STATUS"'>
+						AND STATUS LIKE CONCAT('%', #{searchVal}, '%')
+				</when>
+			</choose>
+		</if>
+		ORDER BY T1.LOAN_ID DESC
+	</select>
+	
+	<select id="selectName" parameterType="Map" resultType="Map">
+		SELECT MEMBER_ID
+			  , NAME
+			  , BIRTHDATE
+		FROM LIBRARYDB.MEMBERS
+	</select>
+	
+	<select id="selectBook" parameterType="Map" resultType="Map">
+		SELECT BOOK_ID
+			  , TITLE
+		FROM LIBRARYDB.BOOKS
+	</select>
+	
+	<select id="selectMembers" parameterType="Map" resultType="Map">
+		SELECT MEMBER_ID
+			  ,NAME
+			  ,EMAIL
+			  ,PHONE
+			  ,BIRTHDATE
+			  ,GRADE
+			  ,0 AS CHK
+		FROM LIBRARYDB.MEMBERS
+	</select>
+	
+	<select id="selectBooks" parameterType="Map" resultType="Map">
+		SELECT BOOK_ID
+			  ,TITLE
+			  ,AUTHOR
+			  ,PUBLISHER
+			  ,PUB_YEAR
+			  ,GENRE
+			  ,PRICE
+			  ,STOCK
+			  ,0 AS CHK
+		FROM BOOKS
+	</select>
+	
+	<insert id = 'insertMem' parameterType='Map'>
+		INSERT INTO LIBRARYDB.MEMBERS (NAME, EMAIL, PHONE, BIRTHDATE)
+		VALUES (#{NAME}, #{EMAIL}, #{PHONE}, #{BIRTHDATE})
+	</insert>
+	
+	<insert id ='insertLoan' parameterType='Map'>
+		INSERT INTO LIBRARYDB.LOANS (MEMBER_ID, BOOK_ID, LOAN_DATE, DUE_DATE)
+		VALUES (#{MEMBER_ID}, #{BOOK_ID}, current_timestamp(), DATE_ADD(current_timestamp(), interval 14 DAY))
+	</insert>
+	
+	
+	<insert id = 'insertBook' parameterType='Map'>
+		INSERT INTO BOOKS (TITLE, AUTHOR, PUBLISHER, PUB_YEAR, GENRE, PRICE, STOCK)
+		VALUES (#{TITLE}, #{AUTHOR}, #{PUBLISHER}, #{PUB_YEAR}, #{GENRE}, #{PRICE} ,#{STOCK})
+	</insert>
+	
+	<update id = 'updateStatus' parameterType='Map'>
+		UPDATE LIBRARYDB.LOANS
+			SET STATUS='반납완료'
+			, RETURN_DATE= CURRENT_TIMESTAMP()
+		WHERE MEMBER_ID=#{MEMBER_ID} 
+			AND LOAN_ID=#{LOAN_ID}
+	</update>
+	
+	<update id = 'updateStock' parameterType='Map'>
+		UPDATE LIBRARYDB.BOOKS
+			SET STOCK = STOCK-1
+		WHERE BOOK_ID=#{BOOK_ID}
+		AND STOCK > 0
+	</update>
+	
+	<update id = 'updateReturnStock' parameterType='Map'>
+		UPDATE LIBRARYDB.BOOKS
+			SET STOCK = STOCK + 1
+		WHERE BOOK_ID=#{BOOK_ID}
+	</update>
+</mapper>
